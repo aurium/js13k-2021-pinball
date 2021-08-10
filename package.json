@@ -1,0 +1,24 @@
+{
+  "name": "js13k-2021-pinball",
+  "version": "0.0.1",
+  "description": "A JS13k Pinball Mobile Game",
+  "main": "game/index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd dist; python3 -m http.server --bind 0.0.0.0 3000",
+    "build": "./build.sh",
+    "build:dev": "NOW=$(date +%F_%T); DEBUG=on ./build.sh && echo $NOW > dist/update",
+    "build:watch": "CMD=build npm run -s build:abstract:watch",
+    "build:dev:watch": "CMD=build:dev npm run -s build:abstract:watch",
+    "build:abstract:watch": "npm run -r $CMD; while inotifywait -r -e create -e modify -e move -e delete .; do npm run -r $CMD; done"
+  },
+  "keywords": [
+    "mobile",
+    "game",
+    "pinball",
+    "javascript",
+    "13k"
+  ],
+  "author": "Aurélio A. Heckert",
+  "license": "AGPL-3.0"
+}

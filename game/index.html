@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>JS13kGame - Pinball</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="style.css?cache=#BUILD#">
+</head>
+<body>
+  <wrapper>
+    <pre></pre>
+    <p>
+      <canvas id="floor"></canvas>
+      <canvas id="shadow"></canvas>
+      <canvas id="pieces"></canvas>
+    </p>
+    <fps onclick="location.reload()"></fps>
+    <b>Loading...</b>
+  </wrapper>
+  <script src="game.js?cache=#BUILD#" type="module"></script>
+<!--
+Idéia:
+
+Um jogo inpirado no pinball, mas sem paletas. O usuário equilibra a bola na mesa
+e usa o acelerometro para que ela role pela mesa.
+
+Na mesa pode ter buracos da morte e passagens para outras mesas.
+-->
+</body>
+</html>
