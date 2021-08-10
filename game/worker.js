@@ -30,7 +30,9 @@ const on = {
 
 }
 
+let ticCounter = 0
 function tic() {
+  ticCounter++
   updateFPS() // DEBUG
   balls.map(ball => {
     ball.vx += gravity.x/2000
@@ -42,7 +44,7 @@ function tic() {
     curLevel.pins.map(pin => actPinColision(ball, pin))
     curLevel.walls.map(wall => actWallColision(ball, wall))
   })
-  if ((fpsCounter%2) === 0) postMessage(['update', { balls }])
+  if ((ticCounter%2) === 0) postMessage(['update', { balls }])
 }
 
 function actPinColision(ball, [x, y, r/*radius*/]) {
