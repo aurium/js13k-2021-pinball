@@ -10,7 +10,8 @@
     "build:dev": "NOW=$(date +%F_%T); DEBUG=on ./build.sh && echo $NOW > dist/update",
     "build:watch": "CMD=build npm run -s build:abstract:watch",
     "build:dev:watch": "CMD=build:dev npm run -s build:abstract:watch",
-    "build:abstract:watch": "npm run -r $CMD; while inotifywait -r -e create -e modify -e move -e delete .; do npm run -r $CMD; done"
+    "build:abstract:watch": "npm run -r $CMD; while inotifywait -r -e create -e modify -e move -e delete .; do npm run -r $CMD; done",
+    "build:CD": "MKZIP=false ./build.sh && DEBUG=on DIST=dist/debug MKZIP=false ./build.sh"
   },
   "keywords": [
     "mobile",
