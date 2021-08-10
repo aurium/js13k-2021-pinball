@@ -33,7 +33,7 @@ window.ctx = ctxPieces // DEBUG
 // let BGGradient = new ImageData(1, 1)
 
 log('Building worker!')
-const worker = new Worker('./worker.js?cache=#BUILD#')
+const worker = new Worker('worker.js?cache=#BUILD#')
 worker.onerror = (err)=> alert('Worker fail.\n\n' + err.message)
 
 worker.onmessage = (ev)=> {
