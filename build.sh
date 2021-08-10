@@ -25,10 +25,10 @@ ls -1 $DIST/*.{js,html} | xargs -L1 sed -ri "s/#BUILD#/$now/"
 
 $DEBUG || sed -ri '
   s!(^|[^.])log\([^)]*\)!\1void(0)!g;
-  s!.*//\s*DEBUG!// EX DEBUG!g;
-  s!/\*\s*(INI\s+DEBUG|DEBUG\s+INI).*\*/!;/* EX MULTILINE DEBUG!g;
-  s!.*<fps.*!!
-' $DIST/*.{js,html}
+  s!.*//\s*DEBUG!// EX DEBUG!;
+  s!/\*\s*(INI\s+DEBUG|DEBUG\s+INI).*\*/!/* EX MULTILINE DEBUG!g;
+  s/.*<!--\s*DEBUG\s*-->.*//;
+' $DIST/*.{js,html,css}
 
 cd $DIST
 
