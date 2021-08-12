@@ -29,8 +29,13 @@ let floorIncX=0, floorIncY=0
 let balls = {}
 window.ctx = ctxPieces // DEBUG
 
-// let BGMandelbroat = new ImageData(1, 1)
-// let BGGradient = new ImageData(1, 1)
+if (navigator.wakeLock) {
+  navigator.wakeLock.request()
+  .then(()=> log('Screen locked!'))
+  .catch(err=> console.log('Cant lock!', err.message)) // Intentional. console.log will not be removed in production.
+} else {
+  log('This browser has no WakeLock feature')
+}
 
 log('Building worker!')
 const worker = new Worker('worker.js?cache=#BUILD#')
