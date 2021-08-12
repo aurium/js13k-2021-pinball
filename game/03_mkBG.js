@@ -1,4 +1,4 @@
-export function mkBGMandelbroat(zoom, posX, posY, maxIteration=200, hueIni=0, hueMult=2) {
+function mkBGMandelbroat(zoom, posX, posY, maxIteration=200, hueIni=0, hueMult=2) {
   posX *= u
   posY *= u
   for (let pixY=0; pixY<h; pixY++) for (let pixX=0; pixX<w; pixX++) {
@@ -13,13 +13,39 @@ export function mkBGMandelbroat(zoom, posX, posY, maxIteration=200, hueIni=0, hu
       x = tempX
       iteration++
     }
+    ctxFloor.fillStyle = `rgb(${iteration*10-1200},0,0)`
     ctxFloor.fillStyle = `hsl(${hueIni+hueMult*iteration},100%,50%)`
     ctxFloor.fillRect(pixX, pixY, 1, 1)
   }
   return ctxFloor.getImageData(0, 0, w, h)
 }
 
-export function mkBGGradient() {
+function mkBGJulia(zoom, posX, posY, z=.52, maxIteration=200, hueIni=0, hueMult=2, limColor='30,30,30') {
+  posX *= u
+  posY *= u
+  for (let pixY=0; pixY<h; pixY++) for (let pixX=0; pixX<w; pixX++) {
+    let cX = w/2 + posX*zoom
+    let cY = h/2 + posY*zoom
+    let x = ((pixY-cY)/w) / zoom
+    let y = ((pixX-cX)/w) / zoom
+    for (var i = 1; i <= maxIteration; i++) {
+      var x2 = x*x, y2 = y*y;
+      if(x2 + y2 > 4) break;
+      let newX = x2 - y2 - z;
+      let newY = 2*x*y + z;
+      x = newX;
+      y = newY;
+    }
+    ctxFloor.fillStyle = (i>maxIteration)?`rgba(${limColor},1)`:`hsl(${hueIni+hueMult*i},100%,50%)`
+    ctxFloor.fillRect(pixX, pixY, 1, 1)
+    ctxFloor.fillStyle = (i>maxIteration)?`rgba(${limColor},.5)`:`hsla(${hueIni+hueMult*i},100%,50%,.5)`
+    ctxFloor.fillRect(pixX-1, pixY, 1, 1)
+    ctxFloor.fillRect(pixX, pixY-1, 1, 1)
+  }
+  return ctxFloor.getImageData(0, 0, w, h)
+}
+
+function mkBGGradient() {
   const img = new ImageData(w, h)
   for (let y=0; y<h; y++) for (let x=0; x<w; x++) {
     let i = (y*w + x) * 4

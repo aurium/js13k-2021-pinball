@@ -6,11 +6,11 @@ const levels = [
       log('Building BG "start"...')
       this.bg = []
       // Create base image:
-      const base = mkBGMandelbroat(600000, -65.401023, -1.800106, 200)
+      const base = mkBGJulia(5, -5, -24, .511, 300, 150, 2.5)
       // Create Frames:
       ctxFloor.lineWidth = u/2
       for (let f=1; f<6; f++) {
-        ctxFloor.putImageData(base, 0, 0)
+        ctxFloor.putImageData(base, 0, 0, 0,0, vw*300, vh*300)
         for (let i=1; i<6; i++) {
           [
             [50*vw + i*u*8, 50*vh],

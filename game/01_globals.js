@@ -51,11 +51,14 @@ worker.on_alive = ()=> workerIsAlive = 1
 /* DEBUG INI Stats */
 window.stats = { begin(){}, end(){} }
 window.statBli = { update(){} }
-// https://github.com/mrdoob/stats.js/issues/120
-import('https://unpkg.com/stats.js').then((function() {
+import('https://mrdoob.github.io/stats.js/build/stats.module.js').then(mod => {
+  const Stats = mod.default
   window.stats = new Stats()
 	window.statBli = stats.addPanel( new Stats.Panel( 'x', '#ff8', '#221' ) )
-	window.stats.showPanel( 3 )
-	document.body.appendChild( stats.dom )
-}).bind(window))
+	document.body.appendChild(stats.dom)
+  values(stats.dom.children).map(c => {
+    c.style.position = 'relative'
+    c.style.display = 'inline-block'
+  })
+})
 /* DEBUG END */

@@ -7,6 +7,6 @@ if (document.location.hostname === 'localhost') {
       const buildDate = new Date('#BUILD#'.replace('_', 'T'))
       if (updateDate > buildDate) document.location.reload()
     })
-    , 500)
+    , 1500)
 }
 /* END DEBUG */

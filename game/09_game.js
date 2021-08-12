@@ -15,7 +15,10 @@ function updateFPS() {
   }
 }
 let bakFPS = 0
-worker.on_bakFPS = val => bakFPS = val
+worker.on_bakFPS = val => {
+  bakFPS = val
+  statBli.update(val, 140)
+}
 /* END DEBUG FPS */
 
 /*
@@ -76,6 +79,7 @@ function setUpLevel() {
 }
 
 function tic() {
+  stats.begin() // DEBUG
   requestAnimationFrame(tic)
   updateFPS() // DEBUG
   updatePoints()
@@ -101,6 +105,7 @@ function tic() {
   ctxPieces.lineCap = 'round'
   ctxPieces.stroke()
   /* END DEBUG */
+  stats.end() // DEBUG
 }
 
 worker.on_update = update => {
