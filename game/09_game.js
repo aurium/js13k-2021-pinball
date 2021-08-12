@@ -247,10 +247,8 @@ if (isMobile) {
   window.addEventListener("devicemotion", (ev)=> {
     // Chrome will only enable this feature for remote sites.
     const g = ev.accelerationIncludingGravity
-    // const x = ((gravity.x*4 + -g.x) / 5) || 0
-    // const y = ((gravity.y*4 + g.y) / 5) || 0
-    const x = -g.x
-    const y = g.y
+    const x = ((gravity.x*4 + -g.x) / 5) || 0
+    const y = ((gravity.y*4 + g.y) / 5) || 0
     if (isNaN(x) || isNaN(y) || x===null || y===null)
       log('BAD Gravity!', {x, y})
     const hyp = sqrt(x*x + y*y)
