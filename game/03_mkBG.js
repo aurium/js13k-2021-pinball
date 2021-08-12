@@ -20,7 +20,7 @@ function mkBGMandelbroat(zoom, posX, posY, maxIteration=200, hueIni=0, hueMult=2
   return ctxFloor.getImageData(0, 0, w, h)
 }
 
-function mkBGJulia(zoom, posX, posY, z=.52, maxIteration=200, hueIni=0, hueMult=2, limColor='30,30,30') {
+function mkBGJulia(zoom, posX, posY, z=.52, maxIteration=200, hueIni=0, hueMult=2, limColor=()=>'0,0%,15%') {
   posX *= u
   posY *= u
   for (let pixY=0; pixY<h; pixY++) for (let pixX=0; pixX<w; pixX++) {
@@ -36,9 +36,12 @@ function mkBGJulia(zoom, posX, posY, z=.52, maxIteration=200, hueIni=0, hueMult=
       x = newX;
       y = newY;
     }
-    ctxFloor.fillStyle = (i>maxIteration)?`rgba(${limColor},1)`:`hsl(${hueIni+hueMult*i},100%,50%)`
+    let color = (i>maxIteration)
+              ? `hsla(${limColor(pixX/w, pixY/h)},`
+              : `hsla(${hueIni+hueMult*i},100%,50%,`
+    ctxFloor.fillStyle = color+'1)'
     ctxFloor.fillRect(pixX, pixY, 1, 1)
-    ctxFloor.fillStyle = (i>maxIteration)?`rgba(${limColor},.5)`:`hsla(${hueIni+hueMult*i},100%,50%,.5)`
+    ctxFloor.fillStyle = color+'.5)'
     ctxFloor.fillRect(pixX-1, pixY, 1, 1)
     ctxFloor.fillRect(pixX, pixY-1, 1, 1)
   }

@@ -6,7 +6,9 @@ const levels = [
       log('Building BG "start"...')
       this.bg = []
       // Create base image:
-      const base = mkBGJulia(5, -5, -24, .511, 300, 150, 2.5)
+      const base = mkBGJulia(5, -5, -24, .511, 500, 150, 2.5, (x,y)=>
+        `${hypotenuse(x-.5,y-.5)*500},100%,40%`
+      )
       // Create Frames:
       ctxFloor.lineWidth = u/2
       for (let f=1; f<6; f++) {

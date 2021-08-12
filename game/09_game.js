@@ -251,7 +251,7 @@ if (isMobile) {
     const y = ((gravity.y*4 + g.y) / 5) || 0
     if (isNaN(x) || isNaN(y) || x===null || y===null)
       log('BAD Gravity!', {x, y})
-    const hyp = sqrt(x*x + y*y)
+    const hyp = hypotenuse(x,y)
     gravity = { x, y, xi: x/hyp||0, yi: y/hyp||0 }
     worker.$('gravity', gravity)
   })
@@ -260,7 +260,7 @@ if (isMobile) {
     const w = body.clientWidth, h = body.clientHeight
     const x = 10*(h/2 - ev.pageY)/(h/2)
     const y = max(min(10*(-w/2 + ev.pageX)/(h/2), 10), -10)
-    const hyp = sqrt(x*x + y*y)
+    const hyp = hypotenuse(x,y)
     gravity = { x, y, xi: x/hyp||0, yi: y/hyp||0 }
     worker.$('gravity', gravity)
   })
