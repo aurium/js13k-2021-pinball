@@ -83,7 +83,7 @@ function calcDist(p1, p2) {
 }
 
 function hypotenuse(x, y) {
-  return sqrt(x**2 + y**2)
+  return sqrt(x*x + y*y)
 }
 
 log('Worker was loaded!')

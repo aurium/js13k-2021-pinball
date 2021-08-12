@@ -249,8 +249,7 @@ if (isMobile) {
     const g = ev.accelerationIncludingGravity
     const x = ((gravity.x*4 + -g.x) / 5) || 0
     const y = ((gravity.y*4 + g.y) / 5) || 0
-    if (isNaN(x) || isNaN(y) || x===null || y===null)
-      log('BAD Gravity!', {x, y})
+    if (isNaN(x) || isNaN(y) || x===null || y===null) log('BAD Gravity!', {x, y})
     const hyp = hypotenuse(x,y)
     gravity = { x, y, xi: x/hyp||0, yi: y/hyp||0 }
     worker.$('gravity', gravity)
@@ -302,9 +301,12 @@ function lockOrientation() {
     log('This browser has no orientation lock feature! Try failover to CSS.')
 }
 
-function initGame() {
+async function initGame() {
   log('Init Game!')
+  $('b').innerText = 'Loading...'
+  await promiseTimeout(10)
   preSetupDone = 1
+  //await Promise.all(levels.map(lvl => lvl.bg()))    maybe...
   levels.map(lvl => lvl.bg())
   tryToInitGame()
 }

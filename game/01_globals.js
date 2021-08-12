@@ -2,6 +2,8 @@ const isMobile = navigator.userAgent.toLowerCase().match(/mobile/i)
 const scrOrient = screen.orientation || {}
 const getRotate = ()=> scrOrient.angle
 
+const promiseTimeout = (ms)=> new Promise(resolve => setTimeout(resolve, ms))
+
 const values = Object.values
 const { stringify, parse } = JSON
 const {PI, sin, cos, round, min, max, sqrt, abs, atan2} = Math
@@ -11,7 +13,7 @@ const rnd = (lim1=1, lim2=null)=> {
   return Math.random() * (lim2-lim1) + lim1
 }
 const rndI = (lim1, lim2)=> floor(rnd(lim1, lim2))
-const hypotenuse = (x, y)=> sqrt(x**2 + y**2)
+const hypotenuse = (x, y)=> sqrt(x*x + y*y)
 const doc = document
 const body = doc.body
 const html = doc.documentElement
