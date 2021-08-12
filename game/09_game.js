@@ -3,14 +3,17 @@
 const fps = $('fps')
 let fpsCounter = 0
 let fpsLast = Date.now()
+function fixNum(n) {
+  return (typeof(n)==='number') ? n.toFixed(1) : String(n)
+}
 function updateFPS() {
   fpsCounter++
   if ((fpsCounter%10) === 0) {
     fps.innerText =
       getRotate() +'deg '+ (~~w+'x'+~~h+' ') +
-      'G: '+ gravity.x.toFixed(1)+', '+gravity.y.toFixed(1) +' - '+
-      'FPS: '+ (1000 / ((Date.now() - fpsLast) / 10)).toFixed(1) +
-      ' / '+ bakFPS.toFixed(1)
+      'G: '+ fixNum(gravity.x)+', '+fixNum(gravity.y) +' - '+
+      'FPS: '+ fixNum(1000 / ((Date.now() - fpsLast) / 10)) +
+      ' / '+ fixNum(bakFPS)
     fpsLast = Date.now()
   }
 }
@@ -244,10 +247,14 @@ if (isMobile) {
   window.addEventListener("devicemotion", (ev)=> {
     // Chrome will only enable this feature for remote sites.
     const g = ev.accelerationIncludingGravity
-    const x = (gravity.x*4 + -g.x) / 5
-    const y = (gravity.y*4 + g.y) / 5
+    // const x = ((gravity.x*4 + -g.x) / 5) || 0
+    // const y = ((gravity.y*4 + g.y) / 5) || 0
+    const x = -g.x
+    const y = g.y
+    if (isNaN(x) || isNaN(y) || x===null || y===null)
+      log('BAD Gravity!', {x, y})
     const hyp = sqrt(x*x + y*y)
-    gravity = { x, y, xi: x/hyp, yi: y/hyp }
+    gravity = { x, y, xi: x/hyp||0, yi: y/hyp||0 }
     worker.$('gravity', gravity)
   })
 } else {
@@ -256,7 +263,7 @@ if (isMobile) {
     const x = 10*(h/2 - ev.pageY)/(h/2)
     const y = max(min(10*(-w/2 + ev.pageX)/(h/2), 10), -10)
     const hyp = sqrt(x*x + y*y)
-    gravity = { x, y, xi: x/hyp, yi: y/hyp }
+    gravity = { x, y, xi: x/hyp||0, yi: y/hyp||0 }
     worker.$('gravity', gravity)
   })
 }
