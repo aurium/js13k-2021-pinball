@@ -244,8 +244,8 @@ if (isMobile) {
   window.addEventListener("devicemotion", (ev)=> {
     // Chrome will only enable this feature for remote sites.
     const g = ev.accelerationIncludingGravity
-    const x = -g.x
-    const y = g.y
+    const x = (x*4 + -g.x) / 5
+    const y = (y*4 + g.y) / 5
     const hyp = sqrt(x*x + y*y)
     gravity = { x, y, xi: x/hyp, yi: y/hyp }
     worker.$('gravity', gravity)
