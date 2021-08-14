@@ -21,9 +21,12 @@
     "13k"
   ],
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/aurium/js13k-2021-pinball.git"
+    "type": "git",
+    "url": "https://github.com/aurium/js13k-2021-pinball.git"
   },
   "author": "Aurélio A. Heckert",
-  "license": "AGPL-3.0"
+  "license": "AGPL-3.0",
+  "devDependencies": {
+    "ect-bin": "^1.4.1"
+  }
 }

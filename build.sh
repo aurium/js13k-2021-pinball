@@ -36,7 +36,14 @@ if $MKZIP; then
   zip=/tmp/$npm_package_name.zip
   test -e $zip && rm $zip
 
-  zip -r $zip *
+  zip -9 -r $zip *
+  echo ">> zip -9 => $(du -b $zip)"
+  rm $zip
+  ect_bin=../node_modules/ect-bin/vendor/linux/ect
+  chmod +x $ect_bin || true
+  $ect_bin -9 -zip $zip *
+  echo ">> ect -9 => $(du -b $zip)"
+  # TODO: Make deploy to use unpack $zip content. I don't know how secure ect is.
 
   size=$(du -b $zip | sed 's/\t.*//')
   max=$((13*1024))
