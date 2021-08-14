@@ -1,5 +1,5 @@
 /* INI DEBUG */
-if (document.location.hostname === 'localhost') {
+if (['localhost','0.0.0.0'].includes(document.location.hostname)) {
   setInterval(()=> fetch('/update?t='+Date.now())
     .then(response => response.text())
     .then(update => {

@@ -3,6 +3,11 @@ const scrOrient = screen.orientation || {}
 const getRotate = ()=> scrOrient.angle
 
 const promiseTimeout = (ms)=> new Promise(resolve => setTimeout(resolve, ms))
+const promiseAfterScreenUpdate = ()=> new Promise(resolve =>
+  requestAnimationFrame(()=>
+    setTimeout(resolve, 1)
+  )
+)
 
 const values = Object.values
 const { stringify, parse } = JSON

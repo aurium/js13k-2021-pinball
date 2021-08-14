@@ -304,10 +304,13 @@ function lockOrientation() {
 async function initGame() {
   log('Init Game!')
   $('b').innerText = 'Loading...'
-  await promiseTimeout(10)
+  await promiseAfterScreenUpdate()
   preSetupDone = 1
   //await Promise.all(levels.map(lvl => lvl.bg()))    maybe...
   levels.map(lvl => lvl.bg())
+  // Set Header BG:
+  ctxFloor.putImageData(levels[0].bg[0], 0, 0)
+  $('pre').style.backgroundImage = `url(${canvasFloor.toDataURL()})`
   tryToInitGame()
 }
 
