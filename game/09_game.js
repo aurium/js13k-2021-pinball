@@ -303,14 +303,20 @@ function lockOrientation() {
 
 async function initGame() {
   log('Init Game!')
-  $('b').innerText = 'Loading...'
+  $('b').innerText = 'Building...'
   await promiseAfterScreenUpdate()
   preSetupDone = 1
   //await Promise.all(levels.map(lvl => lvl.bg()))    maybe...
-  levels.map(lvl => lvl.bg())
+  levels.map((lvl, i)=> {
+    let start = Date.now() // DEBUG
+    log(`Building BG ${i} start...`)
+    lvl.bg()
+    log(`Building BG ${i} done!`, (Date.now()-start)/1000)
+  })
   // Set Header BG:
-  ctxFloor.putImageData(levels[0].bg[0], 0, 0)
+  ctxFloor.putImageData(levels[1].bg[0], 0, 0)
   $('pre').style.backgroundImage = `url(${canvasFloor.toDataURL()})`
+  //ctxFloor.clearRect(0, 0, w, h)
   tryToInitGame()
 }
 
