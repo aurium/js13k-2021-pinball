@@ -87,7 +87,7 @@ async function mkBGStars(zoom, z, posX, posY, starChance=.3) {
   let cloudPix = ~~u
   if (cloudPix%2 !=0) cloudPix--
   for (let pixY=0; pixY<h; pixY+=cloudPix) {
-    await promiseAfterScreenUpdate() // boreless building
+    //await promiseAfterScreenUpdate() // boreless building
     for (let pixX=0; pixX<w; pixX+=cloudPix) {
       let i = calcJuliaPx(zoom, z, posX, posY, pixX, pixY, 150)/150
       ctxFloor.fillStyle = `hsla(${150*i+340},100%,${50 + i*50}%,${i*.9})`
