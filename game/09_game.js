@@ -308,13 +308,11 @@ async function initGame() {
   preSetupDone = 1
   let sequence = Promise.resolve()
   levels.map((lvl, i)=> sequence = sequence.then(async ()=> {
-    ctxFloor.fillStyle = `hsl(${i*60},50%,30%)`
-    ctxFloor.fillRect(0, 0, w, h)
     $('b').innerText = `Building...\nLevel ${i}  `
     await promiseAfterScreenUpdate()
     let start = Date.now() // DEBUG
     log(`Building BG ${i} start...`)
-    lvl.bg()
+    await lvl.bg()
     log(`Building BG ${i} done!`, (Date.now()-start)/1000)
   }))
   await sequence

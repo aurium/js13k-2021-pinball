@@ -2,14 +2,14 @@ let curLevel
 const levels = [
 
   { /* * * LEVEL 0 * * */
-    bg() {
+    async bg() {
       this.bg = []
       // Create base image:
       for (let x=0; x<w; x++) for (let y=0; y<h; y++) {
         ctxFloor.fillStyle = `hsl(${240+(y/h)*70},100%,20%)`
         ctxFloor.fillRect(x,y,1,1)
       }
-      const base = mkBGStars(6, .52, 35, -128)
+      const base = await mkBGStars(6, .52, 35, -128)
       // Create Frames:
       ctxFloor.lineWidth = u/2
       for (let f=1; f<13; f++) {
@@ -21,12 +21,13 @@ const levels = [
             [50*vw, 50*vh + i*u*6],
             [50*vw, 50*vh - i*u*6]
           ].map(([x, y])=> {
-            let fill = f === i
+            let fill = f%6 === i
                      ? mkRadGrad(x,y,u/2, x,y,2*u, '#F20', '#800')
                      : mkRadGrad(x,y,u/2, x,y,2*u, '#900', '#500')
             drawCircle(x, y, 2*u, fill)
           })
         }
+        await promiseAfterScreenUpdate()
         ctxFloor.font = `bold ${10*u}px monospace` //Arial, "Liberation Sans", sans-serif
         ctxFloor.textAlign = 'center'
         const plotChar = (char, x,y, color, blur) => {
@@ -63,7 +64,7 @@ const levels = [
   },
 
   { /* * * LEVEL 1 * * */
-    bg() {
+    async bg() {
       this.bg = []
       // Create base image:
       const base = ctxFloor.getImageData(0, 0, w, h)

@@ -54,35 +54,41 @@ function mkBGJulia(zoom, z=.52, posX, posY, maxIteration=200, hueIni=0, hueMult=
   return ctxFloor.getImageData(0, 0, w, h)
 }
 
-function mkBGStars(zoom, z, posX, posY, starChance=.3) {
+async function mkBGStars(zoom, z, posX, posY, starChance=.3) {
   posX *= u
   posY *= u
   // Draw Clouds
   ctxFloor.filter = `blur(${u/2}px)` // This adds 2secs on loading
-  for (let pixY=0; pixY<h; pixY+=u) for (let pixX=0; pixX<w; pixX+=u) {
-    let i = calcJuliaPx(zoom, z, posX, posY, pixX, pixY, 150)/150
-    ctxFloor.fillStyle = `hsla(${150*i+340},100%,${50 + i*50}%,${i})`
-    ctxFloor.fillRect(pixX-u/2, pixY-u/2, u, u)
+  for (let pixY=0; pixY<h; pixY+=u) {
+    await promiseAfterScreenUpdate() // boreless building
+    for (let pixX=0; pixX<w; pixX+=u) {
+      let i = calcJuliaPx(zoom, z, posX, posY, pixX, pixY, 150)/150
+      ctxFloor.fillStyle = `hsla(${150*i+340},100%,${50 + i*50}%,${i})`
+      ctxFloor.fillRect(pixX-u/2, pixY-u/2, u, u)
+    }
   }
   ctxFloor.filter = 'none'
   // Draw Stars
   ctxFloor.globalCompositeOperation = 'lighter'
-  for (let pixY=0; pixY<h; pixY++) for (let pixX=0; pixX<w; pixX++) {
-    let i = (calcJuliaPx(zoom, z, posX, posY, pixX, pixY, 150)/170)**1.5
-    if (rnd(1/starChance) < .02+i && (pixX+pixY)%3===0) {
-      let size = round((rnd() + i) * 1.5) // 0 .. 3
-      let color = { r:255, g:255, b:255 }
-      if (rnd() < .6) {
-        if (rnd() < .3) {
-          color.g = (color.r = rnd(50,100)) * 2
-          color.b = 255
-        } else {
-          color.r = 255
-          color.g = rnd(255)
-          color.b = rnd(color.g)
+  for (let pixY=0; pixY<h; pixY++) {
+    if (pixY%10 === 0) await promiseAfterScreenUpdate() // boreless building
+    for (let pixX=0; pixX<w; pixX++) {
+      let i = (calcJuliaPx(zoom, z, posX, posY, pixX, pixY, 150)/170)**1.5
+      if (rnd(1/starChance) < .02+i && (pixX+pixY)%3===0) {
+        let size = round((rnd() + i) * 1.5) // 0 .. 3
+        let color = { r:255, g:255, b:255 }
+        if (rnd() < .6) {
+          if (rnd() < .3) {
+            color.g = (color.r = rnd(50,100)) * 2
+            color.b = 255
+          } else {
+            color.r = 255
+            color.g = rnd(255)
+            color.b = rnd(color.g)
+          }
         }
+        plotStar(pixX, pixY, size, color)
       }
-      plotStar(pixX, pixY, size, color)
     }
   }
   for (let i=0; i<9; i++) {
