@@ -6,6 +6,8 @@ if test -z "$npm_package_name"; then
 fi
 
 test -z "$MKZIP" && MKZIP=true
+test -z "$ZIP_PACK" && ZIP_PACK=/tmp/$npm_package_name.zip
+ZIP_PACK="$(realpath "$ZIP_PACK")"
 
 test -z "$DEBUG" && DEBUG=false || DEBUG=true
 $DEBUG && echo DEBUG is ON || echo DEBUG is OFF
@@ -33,27 +35,26 @@ $DEBUG || sed -ri '
 cd $DIST
 
 if $MKZIP; then
-  zip=/tmp/$npm_package_name.zip
-  test -e $zip && rm $zip
+  test -e "$ZIP_PACK" && rm "$ZIP_PACK"
 
-  zip -9 -r $zip *
-  echo ">> zip -9 => $(du -b $zip)"
-  rm $zip
+  zip -9 -r "$ZIP_PACK" *
+  zip_size=$(du -b "$ZIP_PACK" | sed 's/\t.*//')
+  rm "$ZIP_PACK"
   ect_bin=../node_modules/ect-bin/vendor/linux/ect
   chmod +x $ect_bin || true
-  $ect_bin -9 -zip $zip *
-  echo ">> ect -9 => $(du -b $zip)"
-  # TODO: Make deploy to use unpack $zip content. I don't know how secure ect is.
+  $ect_bin -9 -zip "$ZIP_PACK" *
+  ect_size=$(du -b "$ZIP_PACK" | sed 's/\t.*//')
+  echo "• zip size: $zip_size bytes"
+  echo "• ect size: $ect_size bytes (using it)"
 
-  size=$(du -b $zip | sed 's/\t.*//')
   max=$((13*1024))
-  pct=$(echo "scale=2; 100*$size/$max" | bc -l)%
+  pct=$(echo "scale=2; 100*$ect_size/$max" | bc -l)%
 
-  if [ $size -le $max ]; then
-    echo -e "\e[32mThe game pakage is in the limt. $zip: $pct\e[0m"
+  if [ $ect_size -le $max ]; then
+    echo -e "\e[32mThe game pakage is in the limt. $ZIP_PACK: $pct\e[0m"
     exit 0
   else
-    echo -e "\e[31mThe game pakage over the limt. $zip: $pct\e[0m"
+    echo -e "\e[31mThe game pakage over the limt. $ZIP_PACK: $pct\e[0m"
     exit 1
   fi
 else
