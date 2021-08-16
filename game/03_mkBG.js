@@ -54,20 +54,47 @@ function mkBGJulia(zoom, z=.52, posX, posY, maxIteration=200, hueIni=0, hueMult=
   return ctxFloor.getImageData(0, 0, w, h)
 }
 
+const cartesianToIndex = (x, y)=> ( w*y + x ) * 4
+const getColorComponent = (imgPx, x,y, i)=>
+  imgPx[
+    cartesianToIndex(
+      max(min(x, w-1), 0),
+      max(min(y, h-1), 0)
+    ) + i
+  ]
+
+function blurFloor(radius) {
+  const img = ctxFloor.getImageData(0, 0, w, h)
+  const imgPx = img.data
+  for (let x=0; x<w; x++) for (let y=0; y<h; y++) for(let i=0; i<4; i++) {
+    let sum = 0
+    for (let step=0; step<radius; step++) {
+      sum +=
+        getColorComponent(imgPx, x+step, y, i) +
+        getColorComponent(imgPx, x-step, y, i) +
+        getColorComponent(imgPx, x, y+step, i) +
+        getColorComponent(imgPx, x, y-step, i)
+    }
+    imgPx[cartesianToIndex(x,y) + i] = sum / (radius*4)
+  }
+  ctxFloor.putImageData(img, 0, 0)
+}
+
 async function mkBGStars(zoom, z, posX, posY, starChance=.3) {
   posX *= u
   posY *= u
   // Draw Clouds
-  ctxFloor.filter = `blur(${u/2}px)` // This adds 2secs on loading
-  for (let pixY=0; pixY<h; pixY+=u) {
+  let cloudPix = ~~u
+  if (cloudPix%2 !=0) cloudPix--
+  for (let pixY=0; pixY<h; pixY+=cloudPix) {
     await promiseAfterScreenUpdate() // boreless building
-    for (let pixX=0; pixX<w; pixX+=u) {
+    for (let pixX=0; pixX<w; pixX+=cloudPix) {
       let i = calcJuliaPx(zoom, z, posX, posY, pixX, pixY, 150)/150
-      ctxFloor.fillStyle = `hsla(${150*i+340},100%,${50 + i*50}%,${i})`
-      ctxFloor.fillRect(pixX-u/2, pixY-u/2, u, u)
+      ctxFloor.fillStyle = `hsla(${150*i+340},100%,${50 + i*50}%,${i*.9})`
+      ctxFloor.fillRect(pixX-cloudPix/2, pixY-cloudPix/2, cloudPix, cloudPix)
     }
   }
-  ctxFloor.filter = 'none'
+  blurFloor(cloudPix)
   // Draw Stars
   ctxFloor.globalCompositeOperation = 'lighter'
   for (let pixY=0; pixY<h; pixY++) {
