@@ -36,15 +36,19 @@ cd $DIST
 
 if $MKZIP; then
   test -e "$ZIP_PACK" && rm "$ZIP_PACK"
+  if which zip > /dev/null; then
+    zip -9 -r "$ZIP_PACK" *
+    zip_size=$(du -b "$ZIP_PACK" | sed 's/\t.*//')
+  fi
 
-  zip -9 -r "$ZIP_PACK" *
-  zip_size=$(du -b "$ZIP_PACK" | sed 's/\t.*//')
-  rm "$ZIP_PACK"
+  test -e "$ZIP_PACK" && rm "$ZIP_PACK"
   ect_bin=../node_modules/ect-bin/vendor/linux/ect
   chmod +x $ect_bin || true
   $ect_bin -9 -zip "$ZIP_PACK" *
   ect_size=$(du -b "$ZIP_PACK" | sed 's/\t.*//')
-  echo "• zip size: $zip_size bytes"
+  if which zip > /dev/null; then
+    echo "• zip size: $zip_size bytes"
+  fi
   echo "• ect size: $ect_size bytes (using it)"
 
   max=$((13*1024))
