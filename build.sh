@@ -52,13 +52,17 @@ if $MKZIP; then
   echo "• ect size: $ect_size bytes (using it)"
 
   max=$((13*1024))
-  pct=$(echo "scale=2; 100*$ect_size/$max" | bc -l)%
+  if which bc > /dev/null; then
+    pct="= $(echo "scale=2; 100*$ect_size/$max" | bc -l)%"
+  else
+    pct="≈ $(( (100 * $ect_size) / $max))%"
+  fi
 
   if [ $ect_size -le $max ]; then
-    echo -e "\e[32mThe game pakage is in the limt. $ZIP_PACK: $pct\e[0m"
+    echo -e "\e[32mThe game pakage is in the limt. $ZIP_PACK $pct\e[0m"
     exit 0
   else
-    echo -e "\e[31mThe game pakage over the limt. $ZIP_PACK: $pct\e[0m"
+    echo -e "\e[31mThe game pakage over the limt. $ZIP_PACK $pct\e[0m"
     exit 1
   fi
 else
