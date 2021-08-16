@@ -98,7 +98,7 @@ async function mkBGStars(zoom, z, posX, posY, starChance=.3) {
   // Draw Stars
   ctxFloor.globalCompositeOperation = 'lighter'
   for (let pixY=0; pixY<h; pixY++) {
-    if (pixY%10 === 0) await promiseAfterScreenUpdate() // boreless building
+    //if (pixY%10 === 0) await promiseAfterScreenUpdate() // boreless building
     for (let pixX=0; pixX<w; pixX++) {
       let i = (calcJuliaPx(zoom, z, posX, posY, pixX, pixY, 150)/170)**1.5
       if (rnd(1/starChance) < .02+i && (pixX+pixY)%3===0) {
