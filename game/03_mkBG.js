@@ -59,10 +59,10 @@ function mkBGStars(zoom, z, posX, posY, starChance=.3) {
   posY *= u
   // Draw Clouds
   ctxFloor.filter = `blur(${u/2}px)` // This adds 2secs on loading
-  for (let pixY=0; pixY<h; pixY+=6) for (let pixX=0; pixX<w; pixX+=6) {
+  for (let pixY=0; pixY<h; pixY+=u) for (let pixX=0; pixX<w; pixX+=u) {
     let i = calcJuliaPx(zoom, z, posX, posY, pixX, pixY, 150)/150
     ctxFloor.fillStyle = `hsla(${150*i+340},100%,${50 + i*50}%,${i})`
-    ctxFloor.fillRect(pixX-3, pixY-3, 6, 6)
+    ctxFloor.fillRect(pixX-u/2, pixY-u/2, u, u)
   }
   ctxFloor.filter = 'none'
   // Draw Stars

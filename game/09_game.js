@@ -10,6 +10,7 @@ function updateFPS() {
   fpsCounter++
   if ((fpsCounter%10) === 0) {
     fps.innerText =
+      '#BUILD# ' +
       getRotate() +'deg '+ (~~w+'x'+~~h+' ') +
       'G: '+ fixNum(gravity.x)+', '+fixNum(gravity.y) +' - '+
       'FPS: '+ fixNum(1000 / ((Date.now() - fpsLast) / 10)) +

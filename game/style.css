@@ -162,8 +162,9 @@ fps {
   padding: 0 5px;
   z-index: 100;
   opacity: 0.6;
-  font-size: calc(var(--u) * 3.5);
+  font-size: calc(var(--u) * 3.8);
+  font-family: 'Arial Narrow', 'Roboto Condensed', 'Roboto Condensed Light'
 }
-.is-mobile fps:before { content: 'Mobile ' }
-.not-mobile fps:before { content: 'Desktop ' }
+X.is-mobile fps:before { content: 'Mobile ' }
+X.not-mobile fps:before { content: 'Desktop ' }
 /* END DEBUG */
