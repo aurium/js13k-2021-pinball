@@ -49,6 +49,7 @@ const levels = [
           else plotChar(char, x,y, 'rgba(255,255,255,.5)', u/3)
         })
         this.bg.push(ctxFloor.getImageData(0, 0, w, h))
+        ctxFloor.clearRect(0,0,w,h)
       }
     },
     bgFreq: 300,
