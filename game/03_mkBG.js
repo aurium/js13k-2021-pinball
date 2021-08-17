@@ -99,8 +99,7 @@ async function mkBGStars(zoom, z, posX, posY, starChance=.3) {
   for (let pixY=0; pixY<h; pixY++) {
     for (let pixX=0; pixX<w; pixX++) {
       let i = (calcJuliaPx(zoom, z, posX, posY, pixX, pixY, 150)/170)**1.5
-      if (rnd(1/starChance) < .02+i && (pixX+pixY)%3===0) {
-        let size = round((rnd() + i) * 1.5) // 0 .. 3
+      if (rnd(1/starChance) < .01+i && (pixX+pixY)%2===0) {
         let color = { r:255, g:255, b:255 }
         if (rnd() < .6) {
           if (rnd() < .3) {
@@ -112,6 +111,7 @@ async function mkBGStars(zoom, z, posX, posY, starChance=.3) {
             color.b = rnd(color.g)
           }
         }
+        let size = round((rnd() + i)**4) // 0 .. 16
         plotStar(pixX, pixY, size, color)
       }
     }
