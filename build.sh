@@ -25,17 +25,42 @@ $(cat $(ls -1 game/0*.js))
 now=$(date +%F_%T)
 ls -1 $DIST/*.{js,html} | xargs -L1 sed -ri "s/#BUILD#/$now/"
 
-# Accept some levels of nested parentheses inside `log()`.
-recursiveParentheses="([^()]*\([^()]*\)[^()]*)"
-recursiveParentheses="(\([^()]*$recursiveParentheses*[^()]*\))"
-recursiveParentheses="(\([^()]*$recursiveParentheses*[^()]*\))"
-recursiveParentheses="(\([^()]*$recursiveParentheses*[^()]*\))"
-$DEBUG || sed -ri "
-  s!(^|[^.])log\([^()]*$recursiveParentheses*[^()]*\)!\1void(0)!g;
-  s!.*//\s*DEBUG!// EX DEBUG!;
-  s!/\*\s*(INI\s+DEBUG|DEBUG\s+INI).*\*/!/* EX MULTILINE DEBUG!g;
-  s/.*<!--\s*DEBUG\s*-->.*//;
-" $DIST/*.{js,html,css}
+if ! $DEBUG; then
+  # Accept some levels of nested parentheses inside `log()`.
+  recursiveParentheses="([^()]*\([^()]*\)[^()]*)"
+  recursiveParentheses="(\([^()]*$recursiveParentheses*[^()]*\))"
+  recursiveParentheses="(\([^()]*$recursiveParentheses*[^()]*\))"
+  recursiveParentheses="(\([^()]*$recursiveParentheses*[^()]*\))"
+  # Cleanup debug snippets
+  sed -ri "
+    s!(^|[^.])log\([^()]*$recursiveParentheses*[^()]*\)!\1void(0)!g;
+    s!.*//\s*DEBUG!// EX DEBUG!;
+    s!/\*\s*(INI\s+DEBUG|DEBUG\s+INI).*\*/!/* EX MULTILINE DEBUG!g;
+    s/.*<!--\s*DEBUG\s*-->.*//;
+  " $DIST/*.{js,html,css}
+
+  # Minify html
+  HTML=$(tr -s '\n' ' ' < $DIST/index.html)
+  echo "$HTML" | sed -r 's/> </></g; s/<!--[^>]*-->//' > $DIST/index.html
+
+  # Minify CSS
+  CSS=$(tr -s '\n' ' ' < $DIST/style.css)
+  echo "$CSS" | sed -r '
+    s!/\*([^*]|\*[^/])*\*/!!g;
+    s!; *\}!}!g;
+    s! *([:;,{}]) *!\1!g;
+    s!\( *!(!g;
+    s! *\)!)!g;
+  ' > $DIST/style.css
+
+  # Minify JS
+  sed -r 's/const/let/' $DIST/game.js |
+  terser --compress \
+         --mangle toplevel \
+         --mangle-props regex=/_$/ \
+         > $DIST/game.min.js
+  mv $DIST/game.min.js $DIST/game.js
+fi
 
 cd $DIST
 

@@ -28,6 +28,7 @@
   "author": "Aurélio A. Heckert",
   "license": "AGPL-3.0",
   "devDependencies": {
-    "ect-bin": "^1.4.1"
+    "ect-bin": "^1.4.1",
+    "terser": "^5.7.1"
   }
 }
