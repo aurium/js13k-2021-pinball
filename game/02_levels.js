@@ -14,6 +14,7 @@ const levels = [
       // Create Frames:
       ctxFloor.lineWidth = u/2
       for (let f=1; f<13; f++) {
+        await promiseAfterScreenUpdate()
         ctxFloor.putImageData(base, 0, 0)
         for (let i=1; i<6; i++) {
           [
