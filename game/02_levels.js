@@ -4,6 +4,7 @@ const levels = [
   { /* * * LEVEL 0 * * */
     async bg() {
       this.bg = []
+      await promiseAfterScreenUpdate()
       // Create base image:
       for (let x=0; x<w; x++) for (let y=0; y<h; y++) {
         ctxFloor.fillStyle = `hsl(${240+(y/h)*70},100%,20%)`
