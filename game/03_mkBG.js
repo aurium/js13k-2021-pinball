@@ -95,7 +95,7 @@ async function mkBGStars(zoom, z, posX, posY, starChance=.3) {
   }
   blurFloor(cloudPix)
   // Draw Stars
-  ctxFloor.fillRect(0,0,w,h)
+  ctxFloor.globalCompositeOperation = 'lighter'
   for (let pixY=0; pixY<h; pixY++) {
     for (let pixX=0; pixX<w; pixX++) {
       let i = (calcJuliaPx(zoom, z, posX, posY, pixX, pixY, 150)/170)**1.5
