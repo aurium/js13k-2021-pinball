@@ -12,9 +12,9 @@ function updateFPS() {
     fps.innerText =
       '#BUILD# ' +
       getRotate() +'deg '+ (~~w+'x'+~~h+' ') +
-      'G: '+ fixNum(gravity.x)+', '+fixNum(gravity.y) +' - '+
-      'FPS: '+ fixNum(1000 / ((Date.now() - fpsLast) / 10)) +
-      ' / '+ fixNum(bakFPS)
+      'G: '+ fixNum(gravity.x)+', '+fixNum(gravity.y) //+' - '+
+      //'FPS: '+ fixNum(1000 / ((Date.now() - fpsLast) / 10)) +
+      //' / '+ fixNum(bakFPS)
     fpsLast = Date.now()
   }
 }

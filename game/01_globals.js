@@ -67,7 +67,7 @@ window.statBli = { update(){} }
 import('https://mrdoob.github.io/stats.js/build/stats.module.js').then(mod => {
   const Stats = mod.default
   window.stats = new Stats()
-	window.statBli = stats.addPanel( new Stats.Panel( 'x', '#ff8', '#221' ) )
+	window.statBli = stats.addPanel( new Stats.Panel( 'back', '#ff8', '#221' ) )
 	document.body.appendChild(stats.dom)
   values(stats.dom.children).map(c => {
     c.style.position = 'relative'
