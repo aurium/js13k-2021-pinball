@@ -95,11 +95,8 @@ async function mkBGStars(zoom, z, posX, posY, starChance=.3) {
   }
   blurFloor(cloudPix)
   // Draw Stars
-  ctxFloor.globalCompositeOperation = 'lighter'
-  ctxFloor.fillStyle = `rgba(0,0,255,.5)`
   ctxFloor.fillRect(0,0,w,h)
   for (let pixY=0; pixY<h; pixY++) {
-    if (pixY%10 === 9) await promiseAfterScreenUpdate() // boreless building
     for (let pixX=0; pixX<w; pixX++) {
       let i = (calcJuliaPx(zoom, z, posX, posY, pixX, pixY, 150)/170)**1.5
       if (rnd(1/starChance) < .02+i && (pixX+pixY)%3===0) {
