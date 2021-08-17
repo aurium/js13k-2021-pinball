@@ -4,7 +4,7 @@ const levels = [
   { /* * * LEVEL 0 * * */
     async bg() {
       this.bg = []
-      await promiseAfterScreenUpdate()
+      //await promiseAfterScreenUpdate()
       // Create base image:
       for (let x=0; x<w; x++) for (let y=0; y<h; y++) {
         ctxFloor.fillStyle = `hsl(${240+(y/h)*70},100%,20%)`
@@ -14,6 +14,7 @@ const levels = [
       // Create Frames:
       ctxFloor.lineWidth = u/2
       for (let f=1; f<13; f++) {
+        ctxFloor.clearRect(0,0,w,h)
         await promiseAfterScreenUpdate()
         ctxFloor.putImageData(base, 0, 0)
         for (let i=1; i<6; i++) {
@@ -29,7 +30,7 @@ const levels = [
             drawCircle(x, y, 2*u, fill)
           })
         }
-        await promiseAfterScreenUpdate()
+        //await promiseAfterScreenUpdate()
         ctxFloor.font = `bold ${10*u}px monospace` //Arial, "Liberation Sans", sans-serif
         ctxFloor.textAlign = 'center'
         const plotChar = (char, x,y, color, blur) => {
@@ -49,7 +50,6 @@ const levels = [
           else plotChar(char, x,y, 'rgba(255,255,255,.5)', u/3)
         })
         this.bg.push(ctxFloor.getImageData(0, 0, w, h))
-        ctxFloor.clearRect(0,0,w,h)
       }
     },
     bgFreq: 300,
