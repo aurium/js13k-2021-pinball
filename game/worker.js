@@ -42,7 +42,8 @@ function tic() {
     ball.x += ball.vx
     ball.y += ball.vy
     curLevel.pins.map(pin => actPinColision(ball, pin))
-    curLevel.walls.map(wall => actWallColision(ball, wall))
+    curLevel.wallsV.map(wall => actVerticalWallColision(ball, wall))
+    curLevel.wallsH.map(wall => actHorizontalWallColision(ball, wall))
   })
   if ((ticCounter%2) === 0) postMessage(['update', { balls }])
 }
@@ -59,19 +60,21 @@ function actPinColision(ball, [x, y, r/*radius*/]) {
   }
 }
 
-function actWallColision(ball, [vertical, a, b1, b2]) {
-  if (vertical) {
-    let dist = ball.x - a
-    if (abs(dist) < ball.r && b1 < ball.y && ball.y < b2) {
-      ball.vx *= -.8
-      ball.x = a + sign(dist) * ball.r
-    }
-  } else { // horizontal
-    let dist = ball.y - a
-    if (abs(dist) < ball.r && b1 < ball.x && ball.x < b2) {
-      ball.vy *= -.8
-      ball.y = a + sign(dist) * ball.r
-    }
+// TODO: transformar isso em colizao contra retangulo
+function actVerticalWallColision(ball, [x, y, length]) {
+  let dist = ball.x - x
+  if (abs(dist) < ball.r && y < ball.y && ball.y < (y+length)) {
+    ball.vx *= -.8
+    ball.x = x + sign(dist) * ball.r
+  }
+}
+
+// TODO: transformar isso em colizao contra retangulo
+function actHorizontalWallColision(ball, [x, y, length]) {
+  let dist = ball.y - y
+  if (abs(dist) < ball.r && x < ball.x && ball.x < (x+length)) {
+    ball.vy *= -.8
+    ball.y = y + sign(dist) * ball.r
   }
 }
 
