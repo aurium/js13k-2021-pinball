@@ -63,18 +63,30 @@ function actPinColision(ball, [x, y, r/*radius*/]) {
 // TODO: transformar isso em colizao contra retangulo
 function actVerticalWallColision(ball, [x, y, length]) {
   let dist = ball.x - x
-  if (abs(dist) < ball.r && y < ball.y && ball.y < (y+length)) {
-    ball.vx *= -.8
-    ball.x = x + sign(dist) * ball.r
+  if (abs(dist) < ball.r+1 && y < (ball.y+ball.r) && (ball.y+ball.r) < (y+length)) {
+    if (y > ball.y) {
+      //TODO: kick top
+    } else if (ball.y > (y+length)) {
+      //TODO: kick down
+    } else {
+      ball.vx *= -.8
+      ball.x = x + sign(dist) * (ball.r+1)
+    }
   }
 }
 
 // TODO: transformar isso em colizao contra retangulo
 function actHorizontalWallColision(ball, [x, y, length]) {
   let dist = ball.y - y
-  if (abs(dist) < ball.r && x < ball.x && ball.x < (x+length)) {
-    ball.vy *= -.8
-    ball.y = y + sign(dist) * ball.r
+  if (abs(dist) < ball.r+1 && x < (ball.x+ball.r) && (ball.x+ball.r) < (x+length)) {
+    if (x > ball.x) {
+      //TODO: kick left
+    } else if (ball.x > (x+length)) {
+      //TODO: kick right
+    } else {
+      ball.vy *= -.8
+      ball.y = y + sign(dist) * (ball.r+1)
+    }
   }
 }
 

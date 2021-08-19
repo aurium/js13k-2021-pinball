@@ -2,25 +2,18 @@ function drawBall(ball) {
   const ballX = ball.x*u + floorIncX*.8
   const ballY = ball.y*u + floorIncY*.8
   const rad = ball.r * u
-  // inclinationVal varia entre [0..u], onde: 0 = max top right; u = max bottom left
-  const inclinationVal = (20 - gravity.x + gravity.y) * u / 40
+  const inclinationValU = inclinationVal * u
   // Shadow
   // TODO: expand shadow with the table rotation (gravity)
-  const shadowSize = rad + inclinationVal * 4
+  const shadowSize = rad + inclinationValU * 4
   ctxShadow.fillStyle = '#000'
   ctxShadow.beginPath()
   ctxShadow.ellipse(ballX-shadowSize+rad, ballY+shadowSize-rad, shadowSize, rad, -PI/4, 0, 2*PI)
   ctxShadow.fill()
   // Metal ball
-  // const grad = ctxPieces.createRadialGradient(
-  //   ballX+inclinationVal*ball.r/2,   ballY-inclinationVal*ball.r/2, rad/6,
-  //   ballX+inclinationVal, ballY-inclinationVal, rad*1.2 //3.5*u
-  // )
-  // grad.addColorStop(0, `#FFF`)
-  // grad.addColorStop(1, `#111`)
   const grad = mkRadGrad(
-    ballX+inclinationVal*ball.r/2,   ballY-inclinationVal*ball.r/2, rad/6,
-    ballX+inclinationVal, ballY-inclinationVal, rad*1.2,
+    ballX+inclinationValU*ball.r/2, ballY-inclinationValU*ball.r/2, rad/6,
+    ballX+inclinationValU, ballY-inclinationValU, rad*1.2,
     '#FFF', '#111'
   )
   ctxPieces.fillStyle = grad
@@ -30,12 +23,12 @@ function drawBall(ball) {
   ctxPieces.fill()
 }
 
-function drawWallVertical([x, y, length, hue,sat,light]) {
-  drawBox(x-1,y, x+1,y+length, 4, hue,sat,light,.5)
+function drawWallVertical([x, y, length, hue,sat,light,alpha]) {
+  drawBox(x-1,y, x+1,y+length, 4, hue,sat,light,alpha)
 }
 
-function drawWallHorizontal([x, y, length, hue,sat,light]) {
-  drawBox(x,y-1, x+length,y+1, 4, hue,sat,light,.5)
+function drawWallHorizontal([x, y, length, hue,sat,light,alpha]) {
+  drawBox(x,y-1, x+length,y+1, 4, hue,sat,light,alpha)
 }
 
 function fillPath(ctx, h,s,l,a, ...path) {
@@ -50,43 +43,53 @@ function drawBox(x1,y1, x2,y2, h, hue,sat,light,alpha=1) {
   const x1Top = x1 + gravity.x*h/2, y1Top = y1 + gravity.y*h/2
   const x2Top = x2 + gravity.x*h/2, y2Top = y2 + gravity.y*h/2
   // Bottom
-  ctxPieces.beginPath()
-  ctxPieces.moveTo(x1, y1)
-  ctxPieces.lineTo(x2, y1)
-  ctxPieces.lineTo(x2, y2)
-  ctxPieces.lineTo(x1, y2)
-  ctxPieces.fillStyle = `hsla(${hue},${sat}%,${light/2}%,${alpha})`
-  ctxPieces.fill()
+  fillPath(
+    ctxPieces, hue,sat,light/2,alpha*.8,
+    x1,y1, x2,y1, x2,y2, x1,y2
+  )
   // Top
-  ctxPieces.beginPath()
-  ctxPieces.moveTo(x1Top, y1Top)
-  ctxPieces.lineTo(x2Top, y1Top)
-  ctxPieces.lineTo(x2Top, y2Top)
-  ctxPieces.lineTo(x1Top, y2Top)
-  ctxPieces.fillStyle = `hsla(${hue},${sat}%,${light}%,${alpha})`
-  ctxPieces.fill()
-  if (gravity.x > 0 && gravity.y < 0) { // inclination northwest
-    // West
+  fillPath(
+    ctxPieces, hue,sat,(light+(1-inclinationVal)*100)/2,alpha,
+    x1Top,y1Top, x2Top,y1Top, x2Top,y2Top, x1Top,y2Top
+  )
+  if (gravity.x > 0) { // Rotation west-ish, show East wall face
     fillPath(
-      ctxPieces, hue,sat,light/3,alpha,
+      ctxPieces, hue,sat,light/2,alpha,
       x1,y1, x1Top,y1Top, x1Top,y2Top, x1,y2
     )
-    // South
-    ctxPieces.beginPath()
-    ctxPieces.moveTo(x1, y2)
-    ctxPieces.lineTo(x1Top, y2Top)
-    ctxPieces.lineTo(x2Top, y2Top)
-    ctxPieces.lineTo(x2, y2)
-    ctxPieces.fillStyle = `hsla(${hue},${sat}%,${light/2}%,${alpha})`
-    ctxPieces.fill()
   }
+  if (gravity.x < 0) { // Rotation east-ish, show West wall face
+    fillPath(
+      ctxPieces, hue,sat,(light+100)/2,alpha,
+      x2,y1, x2Top,y1Top, x2Top,y2Top, x2,y2
+    )
+  }
+  if (gravity.y < 0) { // Rotation north-ish, show South wall face
+    fillPath(
+      ctxPieces, hue,sat,light/1.5,alpha,
+      x1,y2, x1Top,y2Top, x2Top,y2Top, x2,y2
+    )
+  }
+  if (gravity.y > 0) { // Rotation south-ish, show North wall face
+    fillPath(
+      ctxPieces, hue,sat,(light*2+100)/3,alpha,
+      x1,y1, x1Top,y1Top, x2Top,y1Top, x2,y1
+    )
+  }
+  // Shadow
+  const shadowSize = inclinationVal * 10 * u
+  fillPath(
+    ctxShadow, 0,0,0,1-(1-alpha)**2, // Alpha is a ease-out curve
+    x1,y1, x2,y1, x2,y2,
+    x2-shadowSize,y2+shadowSize,
+    x1-shadowSize,y2+shadowSize,
+    x1-shadowSize,y1+shadowSize
+  )
 }
 
 function drawPin([x, y, rad /*radius*/, h, hue,sat,light]) {
   const baseX = x*u+floorIncX, baseY = y*u+floorIncY
   const endX = baseX+gravity.x*h/2, endY = baseY+gravity.y*h/2
-  // inclinationVal varia entre [0..1], onde: 0 = max top right; 1 = max bottom left
-  const inclinationVal = (20 - gravity.x + gravity.y) / 40
   // Shadow
   const shadowSize = inclinationVal * 10 * u
   ctxShadow.beginPath()

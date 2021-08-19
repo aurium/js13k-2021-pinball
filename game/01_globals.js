@@ -30,9 +30,8 @@ let ctxFloor = canvasFloor.getContext('2d')
 let ctxShadow = canvasShadow.getContext('2d')
 let ctxPieces = canvasPieces.getContext('2d')
 
-let zoom = 1
 let hMid = 0
-let u=1, w=1, h=1, vw=1, vh=1, screenRatio = 5/3
+let u=1, w=1, h=1, vw=1, vh=1, screenRatio = 5/3, inclinationVal = 0
 let floorIncX=0, floorIncY=0
 let balls = {}
 window.ctx = ctxPieces // DEBUG

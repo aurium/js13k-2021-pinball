@@ -92,6 +92,9 @@ function tic() {
   ctxShadow.clearRect(0, 0, w, h)
   ctxPieces.clearRect(0, 0, w, h)
 
+  // inclinationVal varia entre [0..1], onde: 0 = max top right; 1 = max bottom left
+  inclinationVal = (20 - gravity.x + gravity.y) / 40
+
   floorIncX = -gravity.x * u
   floorIncY = -gravity.y * u
   canvasFloor.style.transform = `translate(${floorIncX}px, ${floorIncY}px)`
