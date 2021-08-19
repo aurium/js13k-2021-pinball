@@ -63,11 +63,11 @@ worker.on_alive = ()=> workerIsAlive = 1
 
 /* DEBUG INI Stats */
 window.stats = { begin(){}, end(){} }
-window.statBli = { update(){} }
+window.statBack = { update(){} }
 import('https://mrdoob.github.io/stats.js/build/stats.module.js').then(mod => {
   const Stats = mod.default
   window.stats = new Stats()
-	window.statBli = stats.addPanel( new Stats.Panel( 'back', '#ff8', '#221' ) )
+	window.statBack = stats.addPanel( new Stats.Panel( 'back', '#ff8', '#221' ) )
 	document.body.appendChild(stats.dom)
   values(stats.dom.children).map(c => {
     c.style.position = 'relative'

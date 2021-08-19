@@ -21,7 +21,7 @@ function updateFPS() {
 let bakFPS = 0
 worker.on_bakFPS = val => {
   bakFPS = val
-  statBli.update(val, 140)
+  statBack.update(val, 140)
 }
 /* END DEBUG FPS */
 

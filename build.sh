@@ -33,7 +33,7 @@ if ! $DEBUG; then
   recursiveParentheses="(\([^()]*$recursiveParentheses*[^()]*\))"
   # Cleanup debug snippets
   sed -ri "
-    s!(^|[^.])log\([^()]*$recursiveParentheses*[^()]*\)!\1void(0)!g;
+    s!(^|[^_a-zA-Z0-9])log\([^()]*$recursiveParentheses*[^()]*\)!\1void(0)!g;
     s!.*//\s*DEBUG!// EX DEBUG!;
     s!/\*\s*(INI\s+DEBUG|DEBUG\s+INI).*\*/!/* EX MULTILINE DEBUG!g;
     s/.*<!--\s*DEBUG\s*-->.*//;
