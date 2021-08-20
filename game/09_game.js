@@ -85,6 +85,7 @@ function setUpLevel() {
 function tic() {
   stats.begin() // DEBUG
   requestAnimationFrame(tic)
+  //setTimeout(tic, 4000)
   updateFPS() // DEBUG
   updatePoints()
   if (!curLevel) return;
@@ -99,10 +100,41 @@ function tic() {
   floorIncY = -gravity.y * u
   canvasFloor.style.transform = `translate(${floorIncX}px, ${floorIncY}px)`
 
-  curLevel.pins.map(drawPin)
-  curLevel.wallsV.map(drawWallVertical)
-  curLevel.wallsH.map(drawWallHorizontal)
-  values(balls).map(drawBall)
+  // Unify the list of elements:
+  let els = [
+    ...curLevel.pins.map(el=> [drawPin, ...el]),
+    ...curLevel.wallsV.map(el=> [drawWallVertical, ...el]),
+    ...curLevel.wallsH.map(el=> [drawWallHorizontal, ...el]),
+    ...balls.map(el=> [drawBall, ...el])
+  ]
+  // Define elements sorter:
+  if (gravity.x > 0 && gravity.y < 0) { // Rotation Nort-West
+    els = els.sort(([,aX,aY], [,bX,bY])=>
+      ( (aY*1000-aX) < (bY*1000-bX) ) ? -1 : 1
+    )
+  }
+  else if (gravity.x > 0 && gravity.y > 0) { // Rotation Nort-East
+    els = els.sort(([,aX,aY], [,bX,bY])=>
+      ( (aY*1000+aX) < (bY*1000+bX) ) ? 1 : -1
+    )
+  }
+  else if (gravity.x < 0 && gravity.y < 0) { // Rotation South-West
+    els = els.sort(([,aX,aY], [,bX,bY])=>
+      ( (aY*1000+aX) < (bY*1000+bX) ) ? -1 : 1
+    )
+  }
+  else { // Rotation South-East
+    els = els.sort(([,aX,aY], [,bX,bY])=>
+      ( (aY*1000-aX) < (bY*1000-bX) ) ? 1 : -1
+    )
+  }
+
+  els.map(([painter, ...el])=> painter(...el))
+
+  // curLevel.pins.map(drawPin)
+  // curLevel.wallsV.map(drawWallVertical)
+  // curLevel.wallsH.map(drawWallHorizontal)
+  // values(balls).map(drawBall)
 
   /* INI DEBUG Draw Gravty line */
   ctxPieces.beginPath()

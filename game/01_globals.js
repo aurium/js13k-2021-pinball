@@ -33,7 +33,7 @@ let ctxPieces = canvasPieces.getContext('2d')
 let hMid = 0
 let u=1, w=1, h=1, vw=1, vh=1, screenRatio = 5/3, inclinationVal = 0
 let floorIncX=0, floorIncY=0
-let balls = {}
+let balls = []
 window.ctx = ctxPieces // DEBUG
 
 if (navigator.wakeLock) {

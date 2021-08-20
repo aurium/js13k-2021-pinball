@@ -1,33 +1,33 @@
-function drawBall(ball) {
-  const ballX = ball.x*u + floorIncX*.8
-  const ballY = ball.y*u + floorIncY*.8
-  const rad = ball.r * u
+function drawBall(x, y, ray) {
+  const ballX = x*u + floorIncX*.8
+  const ballY = y*u + floorIncY*.8
+  const rayU = ray * u
   const inclinationValU = inclinationVal * u
   // Shadow
   // TODO: expand shadow with the table rotation (gravity)
-  const shadowSize = rad + inclinationValU * 4
+  const shadowSize = rayU + inclinationValU * 4
   ctxShadow.fillStyle = '#000'
   ctxShadow.beginPath()
-  ctxShadow.ellipse(ballX-shadowSize+rad, ballY+shadowSize-rad, shadowSize, rad, -PI/4, 0, 2*PI)
+  ctxShadow.ellipse(ballX-shadowSize+rayU, ballY+shadowSize-rayU, shadowSize, rayU, -PI/4, 0, 2*PI)
   ctxShadow.fill()
   // Metal ball
   const grad = mkRadGrad(
-    ballX+inclinationValU*ball.r/2, ballY-inclinationValU*ball.r/2, rad/6,
-    ballX+inclinationValU, ballY-inclinationValU, rad*1.2,
+    ballX+inclinationValU*ray/2, ballY-inclinationValU*ray/2, rayU/6,
+    ballX+inclinationValU, ballY-inclinationValU, rayU*1.2,
     '#FFF', '#111'
   )
   ctxPieces.fillStyle = grad
   // ctxPieces.fillStyle = 'rgba(0,255,0,.4)'
   ctxPieces.beginPath()
-  ctxPieces.ellipse(ballX, ballY, rad, rad, 0, 0, 2*PI)
+  ctxPieces.ellipse(ballX, ballY, rayU, rayU, 0, 0, 2*PI)
   ctxPieces.fill()
 }
 
-function drawWallVertical([x, y, length, hue,sat,light,alpha]) {
+function drawWallVertical(x, y, length, hue,sat,light,alpha) {
   drawBox(x-1,y, x+1,y+length, 4, hue,sat,light,alpha)
 }
 
-function drawWallHorizontal([x, y, length, hue,sat,light,alpha]) {
+function drawWallHorizontal(x, y, length, hue,sat,light,alpha) {
   drawBox(x,y-1, x+length,y+1, 4, hue,sat,light,alpha)
 }
 
@@ -87,7 +87,8 @@ function drawBox(x1,y1, x2,y2, h, hue,sat,light,alpha=1) {
   )
 }
 
-function drawPin([x, y, rad /*radius*/, h, hue,sat,light]) {
+function drawPin(x, y, ray /*radius*/, h, hue,sat,light) {
+  ray *= u
   const baseX = x*u+floorIncX, baseY = y*u+floorIncY
   const endX = baseX+gravity.x*h/2, endY = baseY+gravity.y*h/2
   // Shadow
@@ -96,7 +97,7 @@ function drawPin([x, y, rad /*radius*/, h, hue,sat,light]) {
   ctxShadow.moveTo(baseX,     baseY)
   ctxShadow.lineTo(baseX-shadowSize, baseY+shadowSize)
   ctxShadow.strokeStyle = '#000'
-  ctxShadow.lineWidth = rad*2*u
+  ctxShadow.lineWidth = ray*2
   ctxShadow.lineCap = 'round'
   ctxShadow.stroke()
   // Body
@@ -104,8 +105,8 @@ function drawPin([x, y, rad /*radius*/, h, hue,sat,light]) {
   ctxPieces.moveTo(baseX, baseY)
   ctxPieces.lineTo(endX, endY)
   let grad = ctxPieces.createLinearGradient(
-    baseX+gravity.yi*rad*u, baseY-gravity.xi*rad*u,
-    baseX-gravity.yi*rad*u, baseY+gravity.xi*rad*u
+    baseX+gravity.yi*ray, baseY-gravity.xi*ray,
+    baseX-gravity.yi*ray, baseY+gravity.xi*ray
   )
   let light1, light2, light3, rotI /* rotation step */
   light1 = light / 2
@@ -147,12 +148,12 @@ function drawPin([x, y, rad /*radius*/, h, hue,sat,light]) {
   grad.addColorStop(.5, `hsl(${hue} ${sat}% ${light2}%)`)
   grad.addColorStop( 1, `hsl(${hue} ${sat}% ${light3}%)`)
   ctxPieces.strokeStyle = grad
-  ctxPieces.lineWidth = rad*2*u
+  ctxPieces.lineWidth = ray*2
   ctxPieces.lineCap = 'round'
   ctxPieces.stroke()
   // Top
   ctxPieces.fillStyle = `hsl(${hue} ${sat}% ${trans((light*2+100)/3, light/3, inclinationVal)}%)`
   ctxPieces.beginPath()
-  ctxPieces.ellipse(endX, endY, rad*u, rad*u, 0, 0, 2*PI)
+  ctxPieces.ellipse(endX, endY, ray, ray, 0, 0, 2*PI)
   ctxPieces.fill()
 }

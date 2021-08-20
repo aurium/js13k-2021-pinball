@@ -1,11 +1,12 @@
 "use strict";
 
-Object.prototype.map = function(fn) { return Object.values(this).map(fn) }
+const values = Object.values
+Object.prototype.map = function(fn) { return values(this).map(fn) }
 
 const { sqrt, abs, sign } = Math
 const log = (...args)=> console.log('🔵', ...args)
 let points, levels, curLevel, gravity = { x:0, y:0 }
-const balls = { 0: { r:3, x:50, y:50, vx:0, vy:0 } }
+const balls = { 0: { x:50, y:50, r:3, vx:0, vy:0 } }
 
 onmessage = function(e) {
   const [evName, payload] = e.data;
@@ -45,7 +46,9 @@ function tic() {
     curLevel.wallsV.map(wall => actVerticalWallColision(ball, wall))
     curLevel.wallsH.map(wall => actHorizontalWallColision(ball, wall))
   })
-  if ((ticCounter%2) === 0) postMessage(['update', { balls }])
+  if ((ticCounter%2) === 0) postMessage(['update', {
+    balls: values(balls.map(values))
+  }])
 }
 
 function actPinColision(ball, [x, y, r/*radius*/]) {
