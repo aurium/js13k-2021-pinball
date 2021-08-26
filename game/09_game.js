@@ -1,62 +1,8 @@
+if (isMainThread) {
 
-/* INI DEBUG FPS */
-const fps = $('fps')
-let fpsCounter = 0
-let fpsLast = Date.now()
-function fixNum(n) {
-  return (typeof(n)==='number') ? n.toFixed(1) : String(n)
-}
-function updateFPS() {
-  fpsCounter++
-  if ((fpsCounter%10) === 0) {
-    fps.innerText =
-      '#BUILD# ' +
-      getRotate() +'deg '+ (~~w+'x'+~~h+' ') +
-      'G: '+ fixNum(gravity.x)+', '+fixNum(gravity.y) //+' - '+
-      //'FPS: '+ fixNum(1000 / ((Date.now() - fpsLast) / 10)) +
-      //' / '+ fixNum(bakFPS)
-    fpsLast = Date.now()
-  }
-}
-let bakFPS = 0
-worker.on_bakFPS = val => {
-  bakFPS = val
-  statBack.update(val, 140)
-}
-/* END DEBUG FPS */
-
-/*
-https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API
-synth = window.speechSynthesis
-utterThis = new SpeechSynthesisUtterance('Isso é um teste')
-voices={}; synth.getVoices().map(v=>voices[v.lang]=v)
-utterThis.voice=voices['pt-BR']
-[1,2,3,4,5].map(()=>synth.speak(utterThis))
-*/
-
-const pointsEl = $('pre')
 function updatePoints() {
-  pointsEl.innerText = `Points: 000000   Record: 000000`
+  pointsEl.innerHTML = `<t>Points: 000000</t> <l>🚀</l><l>🚀</l><d>🚀</d> <t>Record: 000000</t>`
 }
-
-function onWinResize() {
-  setTimeout(()=> {
-    log('RESIZED!')
-    const wOrig = window.innerWidth
-    const hOrig = window.innerHeight
-    html.className = isMobile ? 'rot' + getRotate() : 'rot90'
-    u = isMobile ? getRotate() ? hOrig/100 : wOrig/100 : (hOrig*.6)/100
-    vw = u
-    vh = u*screenRatio
-    canvasFloor.width = canvasShadow.width = canvasPieces.width
-    = w = round(vw*100)
-    canvasFloor.height = canvasShadow.height = canvasPieces.height
-    = h = round(vh*100)
-    ctxFloor.mustUpdate = 1
-  }, 100)
-}
-onWinResize()
-window.addEventListener('resize', onWinResize)
 
 function updateFloorImage() {
   if (!ctxFloor.mustUpdate) return;
@@ -76,17 +22,16 @@ function updateFloorImage() {
   /* END DEBUG */
 }
 
-
 function setUpLevel() {
   ctxFloor.mustUpdate = 1
   // TODO: setup elements
 }
 
-function tic() {
-  stats.begin() // DEBUG
-  requestAnimationFrame(tic)
+scopeShared.tic = function() {
+  scopeShared.stats.begin() // DEBUG
+  requestAnimationFrame(scopeShared.tic)
   //setTimeout(tic, 4000)
-  updateFPS() // DEBUG
+  scopeShared.updateFPS() // DEBUG
   updatePoints()
   if (!curLevel) return;
   updateFloorImage()
@@ -145,18 +90,13 @@ function tic() {
   ctxPieces.lineCap = 'round'
   ctxPieces.stroke()
   /* END DEBUG */
-  stats.end() // DEBUG
+  scopeShared.stats.end() // DEBUG
 }
 
 worker.on_update = update => {
   balls = update.balls
 }
 
-function trans(from, to, step /* value in [0..1] */) {
-  return (from * (1-step)) + (to * step)
-}
-
-let gravity = { x:0, y:0, xi:0, yi:0 }
 if (isMobile) {
   window.addEventListener("devicemotion", (ev)=> {
     // Chrome will only enable this feature for remote sites.
@@ -179,79 +119,4 @@ if (isMobile) {
   })
 }
 
-/// Initialization ///////////////////////////////
-body.classList.add(isMobile ? 'is-mobile' : 'not-mobile')
-var preSetupDone = 0
-
-log(`Is ${isMobile ? '' : 'NOT'} Mobile.`)
-if (!isMobile) setTimeout(initGame, 500)
-else body.addEventListener('click', ()=> {
-  if (preSetupDone) return;
-  if (body.requestFullscreen) {
-    body.requestFullscreen()
-    .then(()=> setTimeout(lockOrientation, 500))
-    .catch(err => alert('This game needs the fullscreen mode.\n\n' + err.message))
-    .finally(initGame)
-  } else {
-    alert('Your browser do not have fullscreen API.')
-  }
-})
-
-function lockOrientation() {
-  // Do no works on Firefox Android:
-  // https://bugzilla.mozilla.org/show_bug.cgi?id=1610745
-  // Failover to CSS lock. However that will also not work properly:
-  // https://github.com/mozilla-mobile/fenix/issues/20405
-  if (scrOrient.lock)
-    scrOrient
-    .lock('portrait-primary')
-    .then(res => log('Lock OK!'))
-    .catch(err => alert(
-      'Can not lock orientation on this browser.\n' + err.message +
-      '\nFailover to CSS. (However that will also not work properly on Firefox)' +
-      '\nTry to lock rotation on your mobile configuration.'
-    ))
-  else
-    log('This browser has no orientation lock feature! Try failover to CSS.')
-}
-
-async function initGame() {
-  log('Init Game!')
-  await promiseAfterScreenUpdate()
-  preSetupDone = 1
-  let sequence = Promise.resolve()
-  levels.map((lvl, i)=> sequence = sequence.then(async ()=> {
-    $('b').innerText = `Building...\nLevel ${i}  `
-    await promiseAfterScreenUpdate()
-    let start = Date.now() // DEBUG
-    log(`Building BG ${i} start...`)
-    await lvl.bg()
-    log(`Building BG ${i} done!`, (Date.now()-start)/1000)
-  }))
-  await sequence
-
-  log('Set Header BG')
-  ctxFloor.putImageData(levels[0].bg[0], 0, 0)
-  $('pre').style.backgroundImage = `url(${canvasFloor.toDataURL()})`
-  tryToInitGame()
-}
-
-function tryToInitGame() {
-  if (!workerIsAlive) return setTimeout(tryToInitGame, 200)
-  worker.$('start', levels)
-  $('b').remove()
-  tic()
-}
-
-let changeFooterFrameInterval
-worker.on_setLvl = (index)=> {
-  curLevel = levels[index]// parse(stringify(levels[index]))
-  curLevel.curBG = 0
-  ctxFloor.mustUpdate = 1
-  if (changeFooterFrameInterval) clearInterval(changeFooterFrameInterval)
-  changeFooterFrameInterval = setInterval(()=> {
-    curLevel.curBG++
-    if (curLevel.curBG === curLevel.bg.length) curLevel.curBG = 0
-    ctxFloor.mustUpdate = 1
-  }, curLevel.bgFreq || 40)
 }

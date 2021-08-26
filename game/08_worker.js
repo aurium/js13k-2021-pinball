@@ -1,11 +1,8 @@
-"use strict";
+if (!isMainThread) { // Running in a WebWorker
 
 const values = Object.values
 Object.prototype.map = function(fn) { return values(this).map(fn) }
 
-const { sqrt, abs, sign } = Math
-const log = (...args)=> console.log('🔵', ...args)
-let points, levels, curLevel, gravity = { x:0, y:0 }
 const balls = { 0: { x:50, y:50, r:3, vx:0, vy:0 } }
 
 onmessage = function(e) {
@@ -16,9 +13,8 @@ onmessage = function(e) {
 
 const on = {
 
-  start(levelsData) {
+  start() {
     log('Starting!')
-    levels = levelsData
     points = 0
     curLevel = levels[0]
     postMessage(['setLvl', 0])
@@ -104,7 +100,7 @@ function hypotenuse(x, y) {
   return sqrt(x*x + y*y)
 }
 
-log('Worker was loaded!')
+log('Worker was loaded!', this)
 postMessage(['alive']) // Notify that this worker was loaded.
 
 /* INI DEBUG FPS */
@@ -118,3 +114,5 @@ function updateFPS() {
   }
 }
 /* END DEBUG FPS */
+
+}

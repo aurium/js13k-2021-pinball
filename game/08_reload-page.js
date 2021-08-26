@@ -1,5 +1,5 @@
 /* INI DEBUG */
-if (['localhost','0.0.0.0'].includes(document.location.hostname)) {
+if (isMainThread && ['localhost','0.0.0.0'].includes(document.location.hostname)) {
   setInterval(()=> fetch('/update?t='+Date.now())
     .then(response => response.text())
     .then(update => {

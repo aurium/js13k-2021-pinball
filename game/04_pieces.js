@@ -23,12 +23,12 @@ function drawBall(x, y, ray) {
   ctxPieces.fill()
 }
 
-function drawWallVertical(x, y, length, hue,sat,light,alpha) {
-  drawBox(x-1,y, x+1,y+length, 4, hue,sat,light,alpha)
+function drawWallVertical(x, y, length, height, hue,sat,light,alpha) {
+  drawBox(x-1,y, x+1,y+length, height, hue,sat,light,alpha)
 }
 
-function drawWallHorizontal(x, y, length, hue,sat,light,alpha) {
-  drawBox(x,y-1, x+length,y+1, 4, hue,sat,light,alpha)
+function drawWallHorizontal(x, y, length, height, hue,sat,light,alpha) {
+  drawBox(x,y-1, x+length,y+1, height, hue,sat,light,alpha)
 }
 
 function fillPath(ctx, h,s,l,a, ...path) {
@@ -38,8 +38,8 @@ function fillPath(ctx, h,s,l,a, ...path) {
 
 function drawBox(x1,y1, x2,y2, h, hue,sat,light,alpha=1) {
   // TODO: Drop Shadow
-  x1 = x1*u + floorIncX, y1 = y1*u + floorIncY
-  x2 = x2*u + floorIncX, y2 = y2*u + floorIncY
+  x1 = x1*u + floorIncX -.5, y1 = y1*u + floorIncY -.5
+  x2 = x2*u + floorIncX +.5, y2 = y2*u + floorIncY +.5
   const x1Top = x1 + gravity.x*h/2, y1Top = y1 + gravity.y*h/2
   const x2Top = x2 + gravity.x*h/2, y2Top = y2 + gravity.y*h/2
   // Bottom

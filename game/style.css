@@ -116,6 +116,17 @@ pre {
   color: #FFF;
   overflow: hidden;
   font-weight: bold;
+}
+
+pre * {
+  position: static;
+  text-shadow: 0 0 calc(var(--u)*2) #000;
+}
+pre d { /* Dead ship */
+  filter: grayscale(1);
+}
+pre t { /* Text */
+  margin: 0 calc(var(--u)*3);
   text-shadow:
     0 0 calc(var(--u)*2) #000,
     calc(var(--u)*.3) calc(var(--u)*.5) 0 rgba(0,0,0,.5);

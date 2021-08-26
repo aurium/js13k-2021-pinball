@@ -17,7 +17,7 @@ echo "Building into $DIST"
 
 test -e $DIST && rm -r $DIST
 mkdir -p $DIST
-cp game/index.html game/style.css game/worker.js $DIST/
+cp game/index.html game/style.css $DIST/
 echo "
 \"use strict\";
 $(cat $(ls -1 game/0*.js))
