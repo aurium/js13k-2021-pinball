@@ -18,7 +18,7 @@ const on = {
     points = 0
     curLevel = levels[0]
     postMessage(['setLvl', 0])
-    setInterval(tic, 8)
+    setInterval(tic, 9)
   },
 
   gravity(val) {

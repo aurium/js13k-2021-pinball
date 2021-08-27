@@ -111,7 +111,7 @@ async function mkBGStars(zoom, z, posX, posY, starChance=.3) {
             color.b = rnd(color.g)
           }
         }
-        let size = round((rnd() + i)**4) // 0 .. 16
+        let size = (rnd() + i)**4 // 0 .. 16
         plotStar(pixX, pixY, size, color)
       }
     }
@@ -130,6 +130,11 @@ async function mkBGStars(zoom, z, posX, posY, starChance=.3) {
 }
 
 function plotStar(pixX, pixY, size, color) {
+  if (size < 1) {
+    ctxFloor.fillStyle = `rgba(${color.r},${color.g},${color.b},${(size+1)/2})`
+    return ctxFloor.fillRect(pixX, pixY, 1, 1)
+  }
+  size = round(size)
   for (let p=-size; p<=size; p++) {
     ctxFloor.fillStyle = `rgba(${color.r},${color.g},${color.b},${(1-abs(p/(size+1)))**1.5})`
     ctxFloor.fillRect(pixX+p, pixY, 1, 1)

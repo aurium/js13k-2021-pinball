@@ -1,7 +1,10 @@
 if (isMainThread) {
 
 function updatePoints() {
-  pointsEl.innerHTML = `<t>Points: 000000</t> <l>🚀</l><l>🚀</l><d>🚀</d> <t>Record: 000000</t>`
+  pointsEl.innerHTML = `<t>Points: 000000</t>` +
+    `<span><l>🚀</l><l>🚀</l><d>🚀</d></span>` +
+    `<t>Record: 000000</t>`
+  updatePoints = ()=>0
 }
 
 function updateFloorImage() {
@@ -30,7 +33,7 @@ function setUpLevel() {
 scopeShared.tic = function() {
   scopeShared.stats.begin() // DEBUG
   requestAnimationFrame(scopeShared.tic)
-  //setTimeout(tic, 4000)
+  //setTimeout(scopeShared.tic, 200)
   scopeShared.updateFPS() // DEBUG
   updatePoints()
   if (!curLevel) return;
@@ -53,24 +56,33 @@ scopeShared.tic = function() {
     ...balls.map(el=> [drawBall, ...el])
   ]
   // Define elements sorter:
-  if (gravity.x > 0 && gravity.y < 0) { // Rotation Nort-West
-    els = els.sort(([,aX,aY], [,bX,bY])=>
+  // This isn't perfect! We can't define many objects togheter in the map.
+  if (gravity.x > 0 && gravity.y < 0) { // Rotation North-West
+    els = els.sort(([aP,aX,aY,aLen], [bP,bX,bY,bLen])=> (
+      (aP === drawWallVertical && aX < bX) ? aY+=aLen : 0,
+      (bP === drawWallVertical && aX > bX) ? bY+=bLen : 0,
       ( (aY*1000-aX) < (bY*1000-bX) ) ? -1 : 1
-    )
+    ))
   }
-  else if (gravity.x > 0 && gravity.y > 0) { // Rotation Nort-East
-    els = els.sort(([,aX,aY], [,bX,bY])=>
+  else if (gravity.x > 0 && gravity.y > 0) { // Rotation North-East
+    els = els.sort(([aP,aX,aY,aLen], [bP,bX,bY,bLen])=> (
+      (aP === drawWallVertical && aX > bX) ? aY+=aLen : 0,
+      (bP === drawWallVertical && aX < bX) ? bY+=bLen : 0,
       ( (aY*1000+aX) < (bY*1000+bX) ) ? 1 : -1
-    )
+    ))
   }
   else if (gravity.x < 0 && gravity.y < 0) { // Rotation South-West
-    els = els.sort(([,aX,aY], [,bX,bY])=>
-      ( (aY*1000+aX) < (bY*1000+bX) ) ? -1 : 1
+    els = els.sort(([aP,aX,aY], [bP,bX,bY])=>
+      (aP === drawWallVertical || bP === drawWallVertical)
+      ? (aX < bX) ? -1 : 1
+      : ( (aY*1000+aX) < (bY*1000+bX) ) ? -1 : 1
     )
   }
   else { // Rotation South-East
-    els = els.sort(([,aX,aY], [,bX,bY])=>
-      ( (aY*1000-aX) < (bY*1000-bX) ) ? 1 : -1
+    els = els.sort(([aP,aX,aY], [bP,bX,bY])=>
+      (aP === drawWallVertical || bP === drawWallVertical)
+      ? (aX < bX) ? -1 : 1
+      : ( (aY*1000-aX) < (bY*1000-bX) ) ? 1 : -1
     )
   }
 

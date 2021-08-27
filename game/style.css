@@ -120,10 +120,16 @@ pre {
 
 pre * {
   position: static;
-  text-shadow: 0 0 calc(var(--u)*2) #000;
+  display: inline-block;
+}
+pre span {
+  filter: drop-shadow(0 0 calc(var(--u)) #000);
+}
+pre l { /* Dead ship */
+  filter: sepia(1) saturate(22) hue-rotate(180deg);
 }
 pre d { /* Dead ship */
-  filter: grayscale(1);
+  filter: grayscale(1) contrast(.5) brightness(1.3);
 }
 pre t { /* Text */
   margin: 0 calc(var(--u)*3);
