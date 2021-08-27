@@ -45,7 +45,7 @@ if (isMainThread) {
     scopeShared.stats = new Stats()
   	scopeShared.statBack = scopeShared.stats.addPanel( new Stats.Panel( 'back', '#ff8', '#221' ) )
   	document.body.appendChild(scopeShared.stats.dom)
-    values(scopeShared.stats.dom.children).map(c => {
+    scopeShared.stats.dom.children.map(c => {
       c.style.position = 'relative'
       c.style.display = 'inline-block'
     })

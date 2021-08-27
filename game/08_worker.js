@@ -1,8 +1,5 @@
 if (!isMainThread) { // Running in a WebWorker
 
-const values = Object.values
-Object.prototype.map = function(fn) { return values(this).map(fn) }
-
 const balls = { 0: { x:50, y:50, r:3, vx:0, vy:0 } }
 
 onmessage = function(e) {
@@ -43,7 +40,7 @@ function tic() {
     curLevel.wallsH.map(wall => actHorizontalWallColision(ball, wall))
   })
   if ((ticCounter%2) === 0) postMessage(['update', {
-    balls: values(balls.map(values))
+    balls: balls.map(values)
   }])
 }
 

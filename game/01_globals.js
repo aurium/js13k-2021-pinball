@@ -21,6 +21,7 @@ function trans(from, to, step /* value in [0..1] */) {
 }
 
 const values = Object.values
+Object.prototype.map = function(fn) { return values(this).map(fn) }
 const { stringify, parse } = JSON
 const {PI, sin, cos, round, sign, min, max, sqrt, abs, atan2} = Math
 const log = (...args)=> console.log(isMainThread?'1️⃣':'👷', ...args)

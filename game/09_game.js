@@ -88,11 +88,6 @@ scopeShared.tic = function() {
 
   els.map(([painter, ...el])=> painter(...el))
 
-  // curLevel.pins.map(drawPin)
-  // curLevel.wallsV.map(drawWallVertical)
-  // curLevel.wallsH.map(drawWallHorizontal)
-  // values(balls).map(drawBall)
-
   /* INI DEBUG Draw Gravty line */
   ctxPieces.beginPath()
   ctxPieces.moveTo(vw*50, vh*50);
