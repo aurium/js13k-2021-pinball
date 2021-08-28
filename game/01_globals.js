@@ -37,6 +37,7 @@ const $ = isMainThread ? (sel)=> doc.querySelector(sel) : ()=>0
 const canvasFloor = $('#floor')
 const canvasShadow = $('#shadow')
 const canvasPieces = $('#pieces')
+const wallHalfExp = .75
 let ctxFloor, ctxShadow, ctxPieces
 let gravity = { x:0, y:0, xi:0, yi:0 }
 let points = 0

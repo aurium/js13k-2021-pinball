@@ -24,11 +24,11 @@ function drawBall(x, y, ray) {
 }
 
 function drawWallVertical(x, y, length, height, hue,sat,light,alpha) {
-  drawBox(x-1,y, x+1,y+length, height, hue,sat,light,alpha)
+  drawBox(x-wallHalfExp,y, x+wallHalfExp,y+length, height, hue,sat,light,alpha)
 }
 
 function drawWallHorizontal(x, y, length, height, hue,sat,light,alpha) {
-  drawBox(x,y-1, x+length,y+1, height, hue,sat,light,alpha)
+  drawBox(x,y-wallHalfExp, x+length,y+wallHalfExp, height, hue,sat,light,alpha)
 }
 
 function fillPath(ctx, h,s,l,a, ...path) {
