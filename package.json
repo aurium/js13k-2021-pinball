@@ -10,7 +10,7 @@
     "build:dev": "NOW=$(date +%F_%T); DEBUG=on ./build.sh && echo $NOW > dist/update",
     "build:watch": "CMD=build npm run -s build:abstract:watch",
     "build:dev:watch": "CMD=build:dev npm run -s build:abstract:watch",
-    "build:abstract:watch": "npm run -r $CMD; while inotifywait -r -e create -e modify -e move -e delete .; do npm run -r $CMD; done",
+    "build:abstract:watch": "npm run -r $CMD; while inotifywait -r -e create -e modify -e move -e delete game; do npm run -r $CMD; done",
     "build:CD": "ZIP_PACK=prod.zip ./build.sh && DEBUG=on ZIP_PACK=dbg.zip ./build.sh && npm run -s build:clean && unzip prod.zip -d public && unzip dbg.zip -d public/debug && rm *.zip",
     "build:clean": "echo -n '>> Removing build dirs... ' && (! test -e dist || rm -r dist) && (! test -e public || rm -r public) && echo Done."
   },
