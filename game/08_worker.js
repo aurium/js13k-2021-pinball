@@ -13,7 +13,7 @@ const on = {
   start() {
     log('Starting!')
     points = 0
-    curLevel = levels[0]
+    curLevel = {...levels[0]}
     postMessage(['setLvl', 0])
     balls = balls.map((b, i)=> {
       [b.x, b.y] = curLevel.ballStart
@@ -41,13 +41,17 @@ function tic() {
     ball.x += ball.vx
     ball.y += ball.vy
     balls.filter(b2 => b2 != ball).map(b2 => actBallColision(ball, b2))
-    curLevel.pins.map(pin => actPinColision(ball, pin))
+    curLevel.pins.filter(pinIsUp).map(pin => actPinColision(ball, pin))
     curLevel.wallsV.map(wall => actVerticalWallColision(ball, wall))
     curLevel.wallsH.map(wall => actHorizontalWallColision(ball, wall))
   })
   if ((ticCounter%2) === 0) postMessage(['update', {
-    balls: balls.map(values)
+    balls: balls.map(values), pins: curLevel.pins, points
   }])
+}
+
+function pinIsUp(pin) {
+  return pin[3] > 0.2
 }
 
 function actBallColision(b1, b2) {
@@ -56,20 +60,20 @@ function actBallColision(b1, b2) {
   if (dist < minDist) {
     b1.x = b2.x + vec.x * minDist
     b1.y = b2.y + vec.y * minDist
-    ;[b1.vx, b1.vy, b2.vx, b2.vy] = [b2.vx, b2.vy, b1.vx, b1.vy]
+    ;[b1.vx, b1.vy, b2.vx, b2.vy] = [b2.vx*.9, b2.vy*.9, b1.vx*.9, b1.vy*.9]
     const inpactPower = hypotenuse(b2.vx-b1.vx, b2.vy-b1.vy)
     if (inpactPower > 0.02) {
       const gain = min(inpactPower**2, 1)
-      postMessage(['play', [
+      postPlay(
         [1200, 0, gain,   .2],
-        [4800, 0, gain/5, .2]
         [6030, 0, gain/5, .2]
-      ]])
+      )
     }
   }
 }
 
-function actPinColision(ball, [x, y, r/*radius*/]) {
+function actPinColision(ball, pin) {
+  const [x, y, r/*radius*/] = pin
   let [dX, dY, dist, vec] = calcDist(ball, {x, y})
   let minDist = ballRay + r
   if (dist < minDist) {
@@ -79,19 +83,20 @@ function actPinColision(ball, [x, y, r/*radius*/]) {
     ball.x = x + vec.x * minDist
     ball.y = y + vec.y * minDist
     if (absVel > 0.01) {
+      if (curLevel.on.colidePin) curLevel.on.colidePin(pin, absVel*2)
       const gain = min((absVel*2)**2, 1)
-      postMessage(['play', [
+      postPlay(
         [1200, 0, gain/5, .4],
         [1500, 0, gain,   .2],
         [8000, 0, gain/5, .2]
-      ]])
+      )
     }
   }
 }
 
 function actVerticalWallColision(ball, [x, y, length]) {
   let dist = ball.x - x
-  if (abs(dist) < ballRay+wallHalfExp && y < (ball.y+ballRay) && (ball.y+ballRay) < (y+length)) {
+  if (abs(dist) < ballRay+wallHalfExp && y < (ball.y+ballRay) && (ball.y-ballRay) < (y+length)) {
     let pct = 1 // default kick
     if (y > ball.y) { // (Isso realmente vale a pena?)
       // kick to left
@@ -127,10 +132,10 @@ function actHorizontalWallColision(ball, [x, y, length]) {
 
 function playWallColisionSound(gain) {
   gain = min((gain*2)**2, 1)
-  postMessage(['play', [
+  postPlay(
     [ 500, 0, gain,   .3],
     [1300, 0, gain/5, .3]
-  ]])
+  )
 }
 
 function calcDist(p1, p2) {

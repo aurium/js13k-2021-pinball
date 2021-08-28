@@ -92,7 +92,7 @@ function drawPin(x, y, ray /*radius*/, h, hue,sat,light) {
   const baseX = x*u+floorIncX, baseY = y*u+floorIncY
   const endX = baseX+gravity.x*h/2, endY = baseY+gravity.y*h/2
   // Shadow
-  const shadowSize = inclinationVal * 10 * u
+  const shadowSize = inclinationVal * h*2 * u
   ctxShadow.beginPath()
   ctxShadow.moveTo(baseX,     baseY)
   ctxShadow.lineTo(baseX-shadowSize, baseY+shadowSize)

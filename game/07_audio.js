@@ -11,6 +11,10 @@ function TTS(text) {
 }
 if (isMainThread) window.TTS = TTS // DEBUG
 
+function postPlay(...tones) { // Helper for worker context
+  postMessage(['play', tones])
+}
+
 function playTone(freq, start=0, iniGain=1, duration=1, freqEnd, freqEndSec, fadeDelay) {
   //log(freq, start, duration, freqEnd, freqEndSec, fadeDelay)
   setTimeout(()=> {

@@ -45,7 +45,7 @@ let points = 0
 
 let hMid = 0
 let u=1, w=1, h=1, vw=1, vh=1, inclinationVal = 0
-const screenRatio = 5/3, hCenter = 50*screenRatio
+const screenRatio = 5/3, hMax = 500/3, hCenter = hMax/2
 let floorIncX=0, floorIncY=0
 let balls = []
 

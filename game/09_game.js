@@ -1,10 +1,15 @@
 if (isMainThread) {
 
+function numPannel(num) {
+  num = '' + ~~num
+  while (num.length < 6) num = '0' + num
+  return num
+}
+
 function updatePoints() {
-  pointsEl.innerHTML = `<t>Points: 000000</t>` +
+  pointsEl.innerHTML = `<t>Points: ${numPannel(points)}</t>` +
     `<span><l>🚀</l><l>🚀</l><d>🚀</d></span>` +
-    `<t>Record: 000000</t>`
-  updatePoints = ()=>0
+    `<t>Record: ${numPannel(0)}</t>`
 }
 
 function updateFloorImage() {
@@ -57,6 +62,7 @@ scopeShared.tic = function() {
   ]
   // Define elements sorter:
   // This isn't perfect! We can't define many objects togheter in the map.
+  // *** TODO: height < 0.2 must be on the list begining!!! ***
   if (gravity.x > 0 && gravity.y < 0) { // Rotation North-West
     els = els.sort(([aP,aX,aY,aLen], [bP,bX,bY,bLen])=> (
       (aP === drawWallVertical && aX < bX) ? aY+=aLen : 0,
@@ -101,7 +107,9 @@ scopeShared.tic = function() {
 }
 
 worker.on_update = update => {
+  points = update.points
   balls = update.balls
+  curLevel.pins = update.pins
 }
 
 if (isMobile) {
