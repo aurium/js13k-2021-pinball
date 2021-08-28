@@ -11,7 +11,7 @@ let worker, workerIsAlive = 0
 if (isMainThread) {
   log('Building worker!')
   worker = new Worker('game.js?cache=#BUILD#')
-  worker.onerror = (err)=> alert('Worker fail.\n\n' + err.message)
+  worker.onerror = (err)=> notify('Worker fail.\n\n' + err.message)
 
   worker.onmessage = (ev)=> {
     const [evName, payload] = ev.data;
@@ -104,16 +104,16 @@ if (isMainThread) {
   var preSetupDone = 0
 
   log(`Is ${isMobile ? '' : 'NOT'} Mobile.`)
-  if (!isMobile) setTimeout(initGame, 500)
-  else body.addEventListener('click', ()=> {
+  body.addEventListener('click', ()=> {
     if (preSetupDone) return;
+    if (!isMobile) return initGame()
     if (body.requestFullscreen) {
       body.requestFullscreen()
       .then(()=> setTimeout(lockOrientation, 500))
-      .catch(err => alert('This game needs the fullscreen mode.\n\n' + err.message))
+      .catch(err => notify('This game needs the fullscreen mode.\n\n' + err.message))
       .finally(initGame)
     } else {
-      alert('Your browser do not have fullscreen API.')
+      notify('Your browser do not have fullscreen API.')
     }
   })
 }
@@ -127,7 +127,7 @@ function lockOrientation() {
     scrOrient
     .lock('portrait-primary')
     .then(res => log('Lock OK!'))
-    .catch(err => alert(
+    .catch(err => notify(
       'Can not lock orientation on this browser.\n' + err.message +
       '\nFailover to CSS. (However that will also not work properly on Firefox)' +
       '\nTry to lock rotation on your mobile configuration.'
@@ -138,6 +138,7 @@ function lockOrientation() {
 
 async function initGame() {
   log('Init Game!')
+  initAudio()
   TTS('Please wait! It is building...')
   await promiseAfterScreenUpdate()
   preSetupDone = 1
@@ -163,6 +164,7 @@ function tryToInitGame() {
   worker.$('start')
   $('b').remove()
   log('Start animation')
+  initMusic()
   TTS('The game is started!')
   scopeShared.tic()
 }

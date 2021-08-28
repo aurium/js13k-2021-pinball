@@ -33,9 +33,6 @@ const rndI = (lim1, lim2)=> floor(rnd(lim1, lim2))
 const hypotenuse = (x, y)=> sqrt(x*x + y*y)
 const doc = isMainThread && document
 const body = isMainThread && doc.body
-const speechSynthesis = isMainThread && window.speechSynthesis
-// TODO: Set this after user click:
-const voiceEN = isMainThread && speechSynthesis && speechSynthesis.getVoices().find(v=>v.lang=='en-US')
 const $ = isMainThread ? (sel)=> doc.querySelector(sel) : ()=>0
 const canvasFloor = $('#floor')
 const canvasShadow = $('#shadow')
@@ -51,12 +48,7 @@ let balls = []
 
 const pointsEl = isMainThread && $('pre')
 
-function TTS(text) {
-  log('TTS:',text,voiceEN)
-  if (voiceEN) {
-    const speak = new SpeechSynthesisUtterance(text)
-    speak.voice = voiceEN
-    speechSynthesis.speak(speak)
-  }
+function notify(text) {
+  TTS(text)
+  alert(text)
 }
-if (isMainThread) window.TTS = TTS // DEBUG

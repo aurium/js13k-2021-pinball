@@ -53,6 +53,7 @@ function actPinColision(ball, [x, y, r/*radius*/]) {
     ball.vy = absVel * vec.y
     ball.x = x + vec.x * minDist
     ball.y = y + vec.y * minDist
+    if (absVel > 0.01) postMessage(['playPinColision', absVel])
   }
 }
 
@@ -68,6 +69,7 @@ function actVerticalWallColision(ball, [x, y, length]) {
       ball.vx *= -.8
       ball.x = x + sign(dist) * (ball.r+1)
     }
+    if (abs(ball.vx) > 0.01) postMessage(['playWallColision', ball.vx])
   }
 }
 
@@ -83,6 +85,7 @@ function actHorizontalWallColision(ball, [x, y, length]) {
       ball.vy *= -.8
       ball.y = y + sign(dist) * (ball.r+1)
     }
+    if (abs(ball.vy) > 0.01) postMessage(['playWallColision', ball.vy])
   }
 }
 
