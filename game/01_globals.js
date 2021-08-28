@@ -38,12 +38,14 @@ const canvasFloor = $('#floor')
 const canvasShadow = $('#shadow')
 const canvasPieces = $('#pieces')
 const wallHalfExp = .75
+const ballRay = 3
 let ctxFloor, ctxShadow, ctxPieces
 let gravity = { x:0, y:0, xi:0, yi:0 }
 let points = 0
 
 let hMid = 0
-let u=1, w=1, h=1, vw=1, vh=1, screenRatio = 5/3, inclinationVal = 0
+let u=1, w=1, h=1, vw=1, vh=1, inclinationVal = 0
+const screenRatio = 5/3, hCenter = 50*screenRatio
 let floorIncX=0, floorIncY=0
 let balls = []
 

@@ -41,18 +41,5 @@ function initMusic() {
 }
 
 if (isMainThread) {
-  //worker.on_play = args => playTone(...args)
-  worker.on_playPinColision = (gain)=> {
-    gain = abs(gain*2)**2
-    if (gain > 1) gain = 1
-    playTone(1200, 0, gain/5, .4)
-    playTone(1500, 0, gain,   .2)
-    playTone(8000, 0, gain/5, .2)
-  }
-  worker.on_playWallColision = (gain)=> {
-    gain = (gain*2)**2
-    if (gain > 1) gain = 1
-    playTone( 500, 0, gain,   .3)
-    playTone(1300, 0, gain/5, .3)
-  }
+  worker.on_play = tones => tones.map(tone => playTone(...tone))
 }

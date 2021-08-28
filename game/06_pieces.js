@@ -1,7 +1,7 @@
-function drawBall(x, y, ray) {
+function drawBall(x, y) {
   const ballX = x*u + floorIncX*.8
   const ballY = y*u + floorIncY*.8
-  const rayU = ray * u
+  const rayU = ballRay * u
   const inclinationValU = inclinationVal * u
   // Shadow
   // TODO: expand shadow with the table rotation (gravity)
@@ -12,7 +12,7 @@ function drawBall(x, y, ray) {
   ctxShadow.fill()
   // Metal ball
   const grad = mkRadGrad(
-    ballX+inclinationValU*ray/2, ballY-inclinationValU*ray/2, rayU/6,
+    ballX+inclinationValU*ballRay/2, ballY-inclinationValU*ballRay/2, rayU/6,
     ballX+inclinationValU, ballY-inclinationValU, rayU*1.2,
     '#FFF', '#111'
   )

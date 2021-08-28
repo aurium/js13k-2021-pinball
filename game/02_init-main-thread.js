@@ -11,7 +11,7 @@ let worker, workerIsAlive = 0
 if (isMainThread) {
   log('Building worker!')
   worker = new Worker('game.js?cache=#BUILD#')
-  worker.onerror = (err)=> notify('Worker fail.\n\n' + err.message)
+  worker.onerror = (err)=> { log(err); notify('Worker fail.\n\n' + err.message) }
 
   worker.onmessage = (ev)=> {
     const [evName, payload] = ev.data;

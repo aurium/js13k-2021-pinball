@@ -51,6 +51,7 @@ const levels = [
       }
     },
     bgFreq: 300,
+    ballStart: [50, hCenter],
     pins: [
       [50, 130, 2, 6,   0,100,50],
       [20,  84, 6, 5,  90,100,25],
