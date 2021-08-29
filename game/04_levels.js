@@ -2,6 +2,7 @@ let curLevel
 const levels = [
 
   { /* * * LEVEL 0 * * */
+    info: 'You can use the wormhole to travell to another level, but avoid the blackhole!',
     async bg() {
       this.bg = []
       // Create base image:
@@ -52,6 +53,8 @@ const levels = [
       [ 6,      5, 88, 4,  0,0,100,.4],
       [ 6, hMax-5, 88, 4,  0,0,100,.4]
     ],
+    bh: [[75, 25, 4]], // Blackhole [x, y, ray]
+    wh: [[25, 25, 6, 1]], // Wormhole [x, y, ray, destination]
     on: {
       colidePin(pin, inpactPower) {
         if (pin.die) return;
@@ -71,6 +74,8 @@ const levels = [
   },
 
   { /* * * LEVEL 1 * * */
+    name: 'Limitless',
+    info: 'Caution! There are no walls to help you.',
     async bg() {
       this.bg = []
       // Create base image:
@@ -106,11 +111,11 @@ const levels = [
       [50,  37, 3, 4, 180, 30,50],
       [80,  84, 3, 3, 270,100,50]
     ],
-    walls: [
-      [1,  10, 37, 130,   0,40,40],
-      [1,  90, 16, 130,  90,40,40],
-      [0,  15, 20,  89, 180,40,40]
-    ]
+    wallsV: [],
+    wallsH: [],
+    bh: [[75, 25, 4]], // Blackhole [x, y, ray]
+    wh: [[25, 25, 6, 1]], // Wormhole [x, y, ray, destination]
+    on: {}
   }
 
 ]

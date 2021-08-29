@@ -69,6 +69,11 @@ p {
   height: var(--canvasHeight);
   bottom: var(--bottomSpace);
   overflow: hidden;
+  transition: filter 2s;
+}
+
+.lvl-fade p {
+  filter: contrast(30%) brightness(3);
 }
 
 canvas {

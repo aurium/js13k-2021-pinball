@@ -24,19 +24,6 @@ if (isMainThread) {
 
   worker.on_alive = ()=> workerIsAlive = 1
 
-  let changeFooterFrameInterval
-  worker.on_setLvl = (index)=> {
-    curLevel = {...levels[index]}
-    curLevel.curBG = 0
-    ctxFloor.mustUpdate = 1
-    if (changeFooterFrameInterval) clearInterval(changeFooterFrameInterval)
-    changeFooterFrameInterval = setInterval(()=> {
-      curLevel.curBG++
-      if (curLevel.curBG === curLevel.bg.length) curLevel.curBG = 0
-      ctxFloor.mustUpdate = 1
-    }, curLevel.bgFreq || 40)
-  }
-
   /* INI DEBUG FPS and Stats */
   scopeShared.stats = { begin(){}, end(){} }
   scopeShared.statBack = { update(){} }

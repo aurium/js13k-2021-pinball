@@ -30,6 +30,23 @@ function updateFloorImage() {
   /* END DEBUG */
 }
 
+let changeFooterFrameInterval
+worker.on_setLvl = (index)=> {
+  curLevel = {...levels[index]}
+  if (curLevel.name) TTS('Moving to ' + curLevel.name)
+  if (curLevel.info) TTS(curLevel.info)
+  log('Moving to level', index, curLevel.name)
+  curLevel.curBG = 0
+  ctxFloor.mustUpdate = 1
+  if (changeFooterFrameInterval) clearInterval(changeFooterFrameInterval)
+  changeFooterFrameInterval = setInterval(()=> {
+    curLevel.curBG++
+    if (!curLevel.bg) return; // log(curLevel)
+    if (curLevel.curBG === curLevel.bg.length) curLevel.curBG = 0
+    ctxFloor.mustUpdate = 1
+  }, curLevel.bgFreq || 100)
+}
+
 function setUpLevel() {
   ctxFloor.mustUpdate = 1
   // TODO: setup elements
@@ -38,7 +55,7 @@ function setUpLevel() {
 scopeShared.tic = function() {
   scopeShared.stats.begin() // DEBUG
   requestAnimationFrame(scopeShared.tic)
-  //setTimeout(scopeShared.tic, 200)
+  //setTimeout(scopeShared.tic, 2000)
   scopeShared.updateFPS() // DEBUG
   updatePoints()
   if (!curLevel) return;
@@ -52,9 +69,6 @@ scopeShared.tic = function() {
   floorIncX = -gravity.x * u
   floorIncY = -gravity.y * u
   canvasFloor.style.transform = `translate(${floorIncX}px, ${floorIncY}px)`
-
-  paintBlackHole(75, 25, 4)
-  paintWormHole(25, 25, 4)
 
   // Unify the list of elements:
   let els = [
@@ -95,6 +109,10 @@ scopeShared.tic = function() {
     )
   }
 
+  // Paint floor elements
+  curLevel.bh.map(paintBlackHole)
+  curLevel.wh.map(paintWormHole)
+
   els.map(([painter, ...el])=> painter(...el))
 
   /* INI DEBUG Draw Gravty line */
@@ -114,6 +132,9 @@ worker.on_update = update => {
   balls = update.balls
   curLevel.pins = update.pins
 }
+
+worker.on_lvlFadeOut = ()=> body.classList.add('lvl-fade')
+worker.on_lvlFadeIn = ()=> body.classList.remove('lvl-fade')
 
 if (isMobile) {
   window.addEventListener("devicemotion", (ev)=> {

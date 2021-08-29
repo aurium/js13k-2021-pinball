@@ -1,6 +1,7 @@
 if (!isMainThread) { // Running in a WebWorker
 
-balls = [ { x:0, y:0, vx:0, vy:0 } ]
+let stopped = 0
+balls = [ { x:0, y:0, vx:0, vy:0 }, { x:0, y:0, vx:0, vy:0 } ]
 
 onmessage = function(e) {
   const [evName, payload] = e.data;
@@ -8,18 +9,16 @@ onmessage = function(e) {
   else log('Unknown event', evName)
 }
 
+function sendMsg(evName, payload) {
+  postMessage([evName, payload])
+}
+
 const on = {
 
   start() {
     log('Starting!')
     points = 0
-    curLevel = {...levels[0]}
-    postMessage(['setLvl', 0])
-    balls = balls.map((b, i)=> {
-      [b.x, b.y] = curLevel.ballStart
-      b.y += ( (balls.length-1)/2 - i ) * 7
-      return b
-    })
+    changeLevel(0)
     setInterval(tic, 9)
   },
 
@@ -29,29 +28,70 @@ const on = {
 
 }
 
+function changeLevel(index) {
+  curLevel = {...levels[index]}
+  log('Moving to level', index)
+  sendMsg('setLvl', index)
+  balls = balls.map((b, i)=> {
+    [b.x, b.y] = curLevel.ballStart
+    b.y += ( (balls.length-1)/2 - i ) * 7
+    b.vx = 0
+    b.vy = 0
+    return b
+  })
+}
+
 let ticCounter = 0
 function tic() {
   ticCounter++
   updateFPS() // DEBUG
-  balls.map(ball => {
-    ball.vx += gravity.x/2000
-    ball.vy += gravity.y/2000
-    ball.vx *= 0.999
-    ball.vy *= 0.999
-    ball.x += ball.vx
-    ball.y += ball.vy
-    balls.filter(b2 => b2 != ball).map(b2 => actBallColision(ball, b2))
-    curLevel.pins.filter(pinIsUp).map(pin => actPinColision(ball, pin))
-    curLevel.wallsV.map(wall => actVerticalWallColision(ball, wall))
-    curLevel.wallsH.map(wall => actHorizontalWallColision(ball, wall))
-  })
-  if ((ticCounter%2) === 0) postMessage(['update', {
+  if (!stopped) {
+    balls.map(ball => {
+      ball.vx += gravity.x/2000
+      ball.vy += gravity.y/2000
+      ball.vx *= 0.999
+      ball.vy *= 0.999
+      ball.x += ball.vx
+      ball.y += ball.vy
+      let hole
+      if (hole = curLevel.wh.find(ballInsideRadius(ball))) {
+        log('Enter in a wormhole', hole)
+        stopped = 1
+        sendMsg('lvlFadeOut')
+        setTimeout(()=> changeLevel(hole[3]), 2000)
+        setTimeout(()=> sendMsg('lvlFadeIn'), 2000)
+        setTimeout(()=> stopped = 0, 4000)
+        return
+      }
+      if (hole = curLevel.bh.find(ballInsideRadius(ball))) {
+        log('Drop in a blackhole', hole)
+        return killBall(ball)
+      }
+      balls.filter(b2 => b2 != ball).map(b2 => actBallColision(ball, b2))
+      curLevel.pins.filter(pinIsUp).map(pin => actPinColision(ball, pin))
+      curLevel.wallsV.map(wall => actVerticalWallColision(ball, wall))
+      curLevel.wallsH.map(wall => actHorizontalWallColision(ball, wall))
+    })
+  }
+  if ((ticCounter%2) === 0) sendMsg('update', {
     balls: balls.map(values), pins: curLevel.pins, points
-  }])
+  })
 }
 
 function pinIsUp(pin) {
   return pin[3] > 0.2
+}
+
+function ballInsideRadius(ball) {
+  // "other" can be any obj definition where the radius is the third array item
+  return (other)=> calcDist(ball, {x:other[0], y:other[1]})[2] < other[2]
+}
+
+function killBall(ball) {
+  balls = balls.filter(b => b != ball)
+  if (!balls.length) {
+    log('TODO: drop one life for a new ball')
+  }
 }
 
 function actBallColision(b1, b2) {
@@ -150,7 +190,7 @@ function hypotenuse(x, y) {
 }
 
 log('Worker was loaded!', this)
-postMessage(['alive']) // Notify that this worker was loaded.
+sendMsg('alive') // Notify that this worker was loaded.
 
 /* INI DEBUG FPS */
 let fpsCounter = 0
@@ -158,7 +198,7 @@ let fpsLast = Date.now()
 function updateFPS() {
   fpsCounter++
   if ((fpsCounter%10) === 0) {
-    postMessage([ 'bakFPS', 1000 / ((Date.now() - fpsLast) / 10) ])
+    sendMsg( 'bakFPS', 1000 / ((Date.now() - fpsLast) / 10) )
     fpsLast = Date.now()
   }
 }
