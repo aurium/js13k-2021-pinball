@@ -53,6 +53,9 @@ scopeShared.tic = function() {
   floorIncY = -gravity.y * u
   canvasFloor.style.transform = `translate(${floorIncX}px, ${floorIncY}px)`
 
+  paintBlackHole(75, 25, 4)
+  paintWormHole(25, 25, 4)
+
   // Unify the list of elements:
   let els = [
     ...curLevel.pins.map(el=> [drawPin, ...el]),

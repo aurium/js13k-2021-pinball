@@ -157,3 +157,53 @@ function drawPin(x, y, ray /*radius*/, h, hue,sat,light) {
   ctxPieces.ellipse(endX, endY, ray, ray, 0, 0, 2*PI)
   ctxPieces.fill()
 }
+
+function paintWormHole(x, y, r) {
+  x = x*u + floorIncX
+  y = y*u + floorIncY
+  const cx = x - gravity.x*r*.6
+  const cy = y - gravity.y*r*.6
+  r *= u
+  drawCircle(
+    ctxPieces, x,y,r*2.5,
+    mkRadGrad(
+      x,  y,  r*2.5,
+      cx, cy, r/2,
+      'rgba(0,0,0,0)', 'rgba(0,0,200,.3)', '#05C', '#0CF'
+    )
+  )
+  ctxPieces.lineWidth = 1
+  ctxPieces.strokeStyle = mkRadGrad(
+    x,  y,  r*2,
+    cx, cy, r/2,
+    'rgba(0,180,255,.2)', '#0CF'
+  )
+  ctxPieces.beginPath()
+  mapFor(PI/6, 2*PI, PI/6, (a)=> {
+    ctxPieces.moveTo(x+r*2*cos(a), y+r*2*sin(a))
+    ctxPieces.bezierCurveTo(x+r*cos(a), y+r*sin(a), cx,cy, cx,cy)
+  })
+  mapFor(.2,.8,.2, (i1)=> {
+    let i2 = 1-i1
+      , ix = x*i1 + cx*i2
+      , iy = y*i1 + cy*i2
+      , ir = r*2*i1 + r/2*i2
+    ctxPieces.moveTo(ix+ir, iy)
+    ctxPieces.ellipse(ix, iy, ir, ir, 0, 0, 2*PI)
+  })
+  ctxPieces.stroke()
+}
+
+function paintBlackHole(x, y, r) {
+  x *= u
+  y *= u
+  r *= u
+  drawCircle(
+    ctxPieces, x,y,r*1.5,
+    mkRadGrad(x,y,r*1.5, x,y,r, 'rgba(255,0,0,0)', '#000')
+  )
+  // TODO: randomize arround the hole
+  let dist = (800-Date.now()%800)/800
+  ctxPieces.fillStyle = `rgba(255,200,0,${1-dist})`
+  ctxPieces.fillRect(x+r+dist*50, y, 3, 3)
+}

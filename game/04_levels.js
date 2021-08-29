@@ -10,25 +10,14 @@ const levels = [
         ctxFloor.fillRect(x,y,1,1)
       }
       const base = await mkBGStars(6, .52, 35, -128)
+      // TODO: Write Blackhole and WormHole
+      // const base = ctxFloor.getImageData(0, 0, w, h)
       // Create Frames:
       ctxFloor.lineWidth = u/2
       for (let f=1; f<7; f++) {
         ctxFloor.clearRect(0,0,w,h)
         await promiseAfterScreenUpdate()
         ctxFloor.putImageData(base, 0, 0)
-        for (let i=1; i<6; i++) {
-          [
-            [50*vw + i*u*6, 50*vh],
-            [50*vw - i*u*6, 50*vh],
-            [50*vw, 50*vh + i*u*6],
-            [50*vw, 50*vh - i*u*6]
-          ].map(([x, y])=> {
-            let fill = f%6 === i
-                     ? mkRadGrad(x,y,u/2, x,y,2*u, '#F20', '#800')
-                     : mkRadGrad(x,y,u/2, x,y,2*u, '#900', '#500')
-            drawCircle(x, y, 2*u, fill)
-          })
-        }
         ctxFloor.font = `bold ${10*u}px monospace` //Arial, "Liberation Sans", sans-serif
         ctxFloor.textAlign = 'center'
         const plotChar = (char, x,y, color, blur) => {
@@ -51,28 +40,28 @@ const levels = [
       }
     },
     bgFreq: 300,
-    ballStart: [50, hCenter],
+    ballStart: [50, 90],
     pins: mapFor(PI/18, 2*PI, PI/18, ang =>
-      [cos(ang)*30+50, sin(ang)*30+hCenter, 1.5, 4,   60,0,50]
+      [cos(ang)*30+50, sin(ang)*30+90, 1.5, 4,   60,0,50]
     ),
     wallsV: [
-      [  1, 2, hMax-4, 4,  0,0,100,.4],
-      [ 99, 2, hMax-4, 4,  0,0,100,.4]
+      [  5, 6, hMax-12, 4,  0,0,100,.4],
+      [ 95, 6, hMax-12, 4,  0,0,100,.4]
     ],
     wallsH: [
-      [ 2,      1, 96, 4,  0,0,100,.4],
-      [ 2, hMax-1, 96, 4,  0,0,100,.4]
+      [ 6,      5, 88, 4,  0,0,100,.4],
+      [ 6, hMax-5, 88, 4,  0,0,100,.4]
     ],
     on: {
       colidePin(pin, inpactPower) {
         if (pin.die) return;
-        pin[4] -= inpactPower * 10 // Hue
+        pin[4] -= inpactPower * 30 // Hue
         pin[5] = 100 - pin[4]      // Saturation
         points += ~~(inpactPower*10)
         if (pin[4] < 0) {
           pin[4] = 0
           pin.die = 1
-          points += 200
+          points += 100
           // freq, start, iniGain, duration, freqEnd
           postPlay([1000, 0, .5, 1, 100])
           lowerPin(pin)
@@ -103,13 +92,14 @@ const levels = [
             let fill = f === i
                      ? mkRadGrad(x,y,u/2, x,y,2*u, '#F20', '#800')
                      : mkRadGrad(x,y,u/2, x,y,2*u, '#900', '#500')
-            drawCircle(x, y, 2*u, fill)
+            drawCircle(ctxFloor, x, y, 2*u, fill)
           })
         }
         this.bg.push(ctxFloor.getImageData(0, 0, w, h))
       }
     },
     bgFreq: 500,
+    ballStart: [50, hCenter],
     pins: [
       [50, 130, 2, 6,   0,100,50],
       [20,  84, 6, 5,  90,100,25],

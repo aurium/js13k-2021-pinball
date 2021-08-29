@@ -154,14 +154,14 @@ function mkBGGradient() {
   return img
 }
 
-function drawCircle(x, y, r, fill, stroke) {
-  ctxFloor.beginPath()
-  ctxFloor.ellipse(x, y, r, r, 0, 0, 2*PI)
-  ctxFloor.fillStyle = fill
-  ctxFloor.fill()
+function drawCircle(ctx, x, y, r, fill, stroke) {
+  ctx.beginPath()
+  ctx.ellipse(x, y, r, r, 0, 0, 2*PI)
+  ctx.fillStyle = fill
+  ctx.fill()
   if (stroke) {
-    ctxFloor.strokeStyle = stroke
-    ctxFloor.stroke()
+    ctx.strokeStyle = stroke
+    ctx.stroke()
   }
 }
 

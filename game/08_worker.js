@@ -1,6 +1,6 @@
 if (!isMainThread) { // Running in a WebWorker
 
-balls = [ { x:0, y:0, vx:0, vy:0 }, { x:0, y:0, vx:0, vy:0 } ]
+balls = [ { x:0, y:0, vx:0, vy:0 } ]
 
 onmessage = function(e) {
   const [evName, payload] = e.data;
