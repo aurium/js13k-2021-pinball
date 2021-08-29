@@ -28,17 +28,19 @@ const on = {
 
 }
 
+function resetBall(ball, index=null) {
+  [ball.x, ball.y] = curLevel.ballStart
+  if (index != null) ball.y += ( (balls.length-1)/2 - index ) * 7
+  ball.vx = 0
+  ball.vy = 0
+  return ball
+}
+
 function changeLevel(index) {
   curLevel = {...levels[index]}
   log('Moving to level', index)
   sendMsg('setLvl', index)
-  balls = balls.map((b, i)=> {
-    [b.x, b.y] = curLevel.ballStart
-    b.y += ( (balls.length-1)/2 - i ) * 7
-    b.vx = 0
-    b.vy = 0
-    return b
-  })
+  balls = balls.map(resetBall)
 }
 
 let ticCounter = 0
@@ -74,7 +76,7 @@ function tic() {
     })
   }
   if ((ticCounter%2) === 0) sendMsg('update', {
-    balls: balls.map(values), pins: curLevel.pins, points
+    balls: balls.map(values), pins: curLevel.pins, points, lives
   })
 }
 
@@ -88,10 +90,25 @@ function ballInsideRadius(ball) {
 }
 
 function killBall(ball) {
+  postPlay(
+    //freq, start, iniGain, duration, freqEnd
+    [1600,  0,     .8,      1,        200]
+  )
   balls = balls.filter(b => b != ball)
   if (!balls.length) {
-    log('TODO: drop one life for a new ball')
+    lives--
+    if (lives > 0) {
+      let newBall = {}
+      balls.push(newBall)
+      resetBall(newBall)
+    } else {
+      gameOver()
+    }
   }
+}
+
+function gameOver() {
+  log('TODO: Implement GAME OVER')
 }
 
 function actBallColision(b1, b2) {

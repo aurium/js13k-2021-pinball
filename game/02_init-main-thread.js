@@ -62,6 +62,13 @@ if (isMainThread) {
   }
   /* END DEBUG FPS and Stats */
 
+  record = localStorage[localStorageRecordKey] || 12345
+  setInterval(()=> {
+    if (points > record) {
+      localStorage[localStorageRecordKey] = record = points
+    }
+  }, 500)
+
   function onWinResize() {
     setTimeout(()=> {
       log('RESIZED!')

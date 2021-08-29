@@ -8,8 +8,10 @@ function numPannel(num) {
 
 function updatePoints() {
   pointsEl.innerHTML = `<t>Points: ${numPannel(points)}</t>` +
-    `<span><l>🚀</l><l>🚀</l><d>🚀</d></span>` +
-    `<t>Record: ${numPannel(0)}</t>`
+    `<span>${mapFor(1,3,1,(i)=>
+      (lives<i) ? '<d>🚀</d>' : '<l>🚀</l>'
+    ).join('')}</span>` +
+    `<t>Record: ${numPannel(record)}</t>`
 }
 
 function updateFloorImage() {
@@ -129,6 +131,7 @@ scopeShared.tic = function() {
 
 worker.on_update = update => {
   points = update.points
+  lives = update.lives
   balls = update.balls
   curLevel.pins = update.pins
 }
