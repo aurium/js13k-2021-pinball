@@ -100,20 +100,21 @@ function killBall(ball) {
   balls = balls.filter(b => b != ball)
   if (!balls.length) {
     lives--
-    if (lives > 0) {
-      let newBall = {}
-      balls.push(newBall)
-      resetBall(newBall)
-      return postPlay( // New Ball Song
-        [ 800, 0.0, 0.5, .6],
-        [3000, 0.0, 0.3, .6],
-        [ 800, 0.3, 1.0, .3],
-        [1200, 0.5, 1.0, .5]
-      )
-    } else {
-      gameOver()
-    }
+    if (lives > 0) setTimeout(createBall, 1500)
+    else setTimeout(gameOver, 1500)
   }
+}
+
+function createBall() {
+  let newBall = {}
+  balls.push(newBall)
+  resetBall(newBall)
+  return postPlay( // New Ball Song
+    [ 800, 0.0, 0.5, .6],
+    [3000, 0.0, 0.3, .6],
+    [ 800, 0.3, 1.0, .3],
+    [1200, 0.5, 1.0, .5]
+  )
 }
 
 function gameOver() {
