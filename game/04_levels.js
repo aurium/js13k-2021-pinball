@@ -1,4 +1,6 @@
 let curLevel
+const bottom = (num)=> hMax - num
+
 const levels = [
 
   { /* * * LEVEL 0 * * */
@@ -83,14 +85,27 @@ const levels = [
     async bg() {
       this.bg = []
       // Create base image:
-      const base = ctxFloor.getImageData(0, 0, w, h)
-      // const base = mkBGJulia(5, .511, -5, -24, 500, 150, 2.5, (x,y)=>
-      //   `${hypotenuse(x-.5,y-.5)*500},100%,40%`
-      // )
+      const base = mkBGJulia(5, .511, -5, -24, 500, 150, 2.5, (x,y)=>
+        `${hypotenuse(x-.5,y-.5)*500},100%,40%`
+      )
       // Create Frames:
       ctxFloor.lineWidth = u/2
-      for (let f=1; f<6; f++) {
+      for (let f=1; f<2; f++) {
         ctxFloor.putImageData(base, 0, 0)
+
+        ;[5,5,5,5,5,5,0].map(blur => {
+          ctxFloor.filter = `blur(${blur}px)`
+          ctxFloor.font = `bold ${3.5*u}px Arial, "Liberation Sans", sans-serif`
+          ctxFloor.textAlign = 'center'
+          ctxFloor.fillStyle = blur ? '#C0C' : '#FFF' //'#403'
+          ctxFloor.fillText('Inferno', 10*u, 20*u)
+          ctxFloor.fillText('Clones',  90*u, 20*u)
+          ctxFloor.fillText('Mines',   10*u, 149*u)
+          ctxFloor.fillText('Solaris', 90*u, 149*u)
+        })
+        ctxFloor.filter = `none`
+
+        // TODO: Remove it!
         for (let i=1; i<6; i++) {
           [
             [50*vw + i*u*8, 50*vh],
@@ -114,15 +129,123 @@ const levels = [
              ball.y < 0 || ball.y > hMax
     },
     pins: [
-      [50, 130, 2, 6,   0,100,50],
-      [20,  84, 6, 5,  90,100,25],
-      [50,  37, 3, 4, 180, 30,50],
-      [80,  84, 3, 3, 270,100,50]
+      [15, 25, 2, 4,  0,0,10],
+      [20, 20, 2, 4,  0,0,10],
+      [25, 15, 2, 4,  0,0,10],
+
+      [75, 15, 2, 4,  0,0,10],
+      [80, 20, 2, 4,  0,0,10],
+      [85, 25, 2, 4,  0,0,10],
+
+      [15, bottom(25), 2, 4,  0,0,10],
+      [20, bottom(20), 2, 4,  0,0,10],
+      [25, bottom(15), 2, 4,  0,0,10],
+
+      [75, bottom(15), 2, 4,  0,0,10],
+      [80, bottom(20), 2, 4,  0,0,10],
+      [85, bottom(25), 2, 4,  0,0,10]
     ],
     wallsV: [],
     wallsH: [],
-    bh: [[75, 25, 4]], // Blackhole [x, y, ray]
-    wh: [[25, 25, 6, 1]], // Wormhole [x, y, ray, destination]
+    bh: [], // Blackhole [x, y, ray]
+    wh: [ // Wormhole [x, y, ray, destination]
+      [10, 10, 6, 2],
+      [90, 10, 6, 3],
+      [10, bottom(10), 6, 4],
+      [90, bottom(10), 6, 5],
+    ],
+    on: {}
+  },
+
+  { /* * * LEVEL 2 * * */
+    name: 'Inferno',
+    info: 'all hope abandon ye who enter here',
+    async bg() {
+      this.bg = []
+
+    },
+    bgFreq: 500,
+    ballStart: [50, hCenter],
+    out(ball) {
+      return ball.x < 0 || ball.x > 100 ||
+             ball.y < 0 || ball.y > hMax
+    },
+    pins: [
+    ],
+    wallsV: [],
+    wallsH: [],
+    bh: [
+
+    ],
+    wh: [
+      [10, 10, 6, 3],
+    ],
+    on: {}
+  },
+
+  { /* * * LEVEL 3 * * */
+    name: 'Clones',
+    info: 'freed all of them!',
+    async bg() {
+    },
+    bgFreq: 500,
+    ballStart: [50, hCenter],
+    out(ball) {
+      return ball.x < 0 || ball.x > 100 ||
+             ball.y < 0 || ball.y > hMax
+    },
+    pins: [
+    ],
+    wallsV: [],
+    wallsH: [],
+    bh: [],
+    wh: [
+      [10, 10, 6, 0],
+    ],
+    on: {}
+  },
+
+  { /* * * LEVEL 4 * * */
+    name: 'Minefield',
+    info: 'Caution!',
+    async bg() {
+    },
+    bgFreq: 500,
+    ballStart: [50, hCenter],
+    out(ball) {
+      return ball.x < 0 || ball.x > 100 ||
+             ball.y < 0 || ball.y > hMax
+    },
+    pins: [
+    ],
+    wallsV: [],
+    wallsH: [],
+    bh: [],
+    wh: [
+      [10, 10, 6, 0],
+    ],
+    on: {}
+  },
+
+  { /* * * LEVEL 5 * * */
+    name: 'Solaris',
+    info: '',
+    async bg() {
+    },
+    bgFreq: 500,
+    ballStart: [50, hCenter],
+    out(ball) {
+      return ball.x < 0 || ball.x > 100 ||
+             ball.y < 0 || ball.y > hMax
+    },
+    pins: [
+    ],
+    wallsV: [],
+    wallsH: [],
+    bh: [],
+    wh: [
+      [10, 10, 6, 0],
+    ],
     on: {}
   }
 

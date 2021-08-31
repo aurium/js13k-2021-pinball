@@ -44,7 +44,7 @@ worker.on_setLvl = (index)=> {
   changeFooterFrameInterval = setInterval(()=> {
     curLevel.curBG++
     if (!curLevel.bg) return; // log(curLevel)
-    if (curLevel.curBG === curLevel.bg.length) curLevel.curBG = 0
+    if (curLevel.curBG >= curLevel.bg.length) curLevel.curBG = 0
     ctxFloor.mustUpdate = 1
   }, curLevel.bgFreq || 100)
 }
