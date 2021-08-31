@@ -42,6 +42,10 @@ const levels = [
     },
     bgFreq: 300,
     ballStart: [50, 90],
+    out(ball) {
+      return ball.x < 0 || ball.x > 100 ||
+             ball.y < 0 || ball.y > hMax
+    },
     pins: mapFor(PI/18, 2*PI, PI/18, ang =>
       [cos(ang)*30+50, sin(ang)*30+90, 1.5, 4,   60,0,50]
     ),
@@ -105,6 +109,10 @@ const levels = [
     },
     bgFreq: 500,
     ballStart: [50, hCenter],
+    out(ball) {
+      return ball.x < 0 || ball.x > 100 ||
+             ball.y < 0 || ball.y > hMax
+    },
     pins: [
       [50, 130, 2, 6,   0,100,50],
       [20,  84, 6, 5,  90,100,25],

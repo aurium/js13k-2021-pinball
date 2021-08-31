@@ -68,14 +68,18 @@ function tic() {
           ...mapFor(200,1000,100,(f)=> [f, f/1000, .5, .3])
         )
       }
-      if (hole = curLevel.bh.find(ballInsideRadius(ball))) {
-        log('Drop in a blackhole', hole)
-        return killBall(ball)
-      }
       balls.filter(b2 => b2 != ball).map(b2 => actBallColision(ball, b2))
       curLevel.pins.filter(pinIsUp).map(pin => actPinColision(ball, pin))
       curLevel.wallsV.map(wall => actVerticalWallColision(ball, wall))
       curLevel.wallsH.map(wall => actHorizontalWallColision(ball, wall))
+      if (hole = curLevel.bh.find(ballInsideRadius(ball))) {
+        log('Drop in a blackhole', hole)
+        killBall(ball)
+      }
+      if (curLevel.out(ball)) {
+        log('Drop out the limits')
+        killBall(ball)
+      }
     })
   }
   if ((ticCounter%2) === 0) sendMsg('update', {
