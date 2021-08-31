@@ -26,14 +26,22 @@ body {
   width: 100vw;
   height: 100vh;
   color: #FFF;
+  perspective: 100vw; /* To simulate cell rotation on a desktop */
 }
+
 wrapper {
   width: 100vw;
   height: 100vh;
   filter: drop-shadow(0 0 2vw #000) grayscale(0%);
+  transform-origin: 0 0;
+}
+
+gameset {
+  width: 100vw;
+  height: 100vh;
   transition: filter 4s;
 }
-.over wrapper {
+.over gameset {
   filter: drop-shadow(0 0 2vw #000) grayscale(100%);
 }
 
@@ -41,14 +49,14 @@ wrapper {
   --u: 1vh;
   --h: 100vw;
 }
-.rot90 wrapper, .rot270 wrapper {
+.rot90 gameset, .rot270 gameset {
   transform-origin: top left;
   transform: rotate(-90deg);
   width: 100vh;
   height: 100vw;
   top: 100vh;
 }
-.rot270 wrapper {
+.rot270 gameset {
   transform: rotate(90deg);
   top: 0;
   left: 100vw;
@@ -59,11 +67,17 @@ wrapper {
   --h: calc( 60vh * 2 );
 }
 .not-mobile wrapper {
-  transform-origin: top left;
+  width: 0;
+  height: 0;
+  top: 50vh;
+  left: 50vw;
+}
+.not-mobile gameset {
   width: 60vh;
   height: var(--h);
-  left: calc( (100vw - 60vh * 2) / 2 );
-  top: 80vh;
+  left: calc( (100vw - 60vh * 2) / 2 - 50vw );
+  top: 27vh;
+  transform-origin: top left;
 }
 
 p {

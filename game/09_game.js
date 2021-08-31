@@ -74,6 +74,11 @@ scopeShared.tic = function() {
   // Floor brightness is lighter on nort-west rotation and darker on other end.
   canvasFloor.style.filter = `brightness(${.6+(1-inclinationVal)/2})`
 
+  if (!isMobile) {
+    wrapper.style.transform =
+      `rotateX(${gravity.x*2}deg) rotateY(${gravity.y*2}deg)`
+  }
+
   // Unify the list of elements:
   let els = [
     ...curLevel.pins.map(el=> [drawPin, ...el]),

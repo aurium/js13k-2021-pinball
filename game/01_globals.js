@@ -34,6 +34,7 @@ const hypotenuse = (x, y)=> sqrt(x*x + y*y)
 const doc = isMainThread && document
 const body = isMainThread && doc.body
 const $ = isMainThread ? (sel)=> doc.querySelector(sel) : ()=>0
+const wrapper = $('wrapper')
 const canvasFloor = $('#floor')
 const canvasShadow = $('#shadow')
 const canvasPieces = $('#pieces')
