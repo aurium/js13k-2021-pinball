@@ -117,7 +117,11 @@ scopeShared.tic = function() {
   curLevel.bh.map(paintBlackHole)
   curLevel.wh.map(paintWormHole)
 
-  els.map(([painter, ...el])=> painter(...el))
+  const filterLower = (el => el[4]<.2 && el[0] != drawBall)
+  // Draw lower elements
+  els.filter(filterLower).map(([painter, ...el])=> painter(...el))
+  // Draw higher elements
+  els.filter(e => !filterLower(e)).map(([painter, ...el])=> painter(...el))
 
   /* INI DEBUG Draw Gravty line */
   ctxPieces.beginPath()
