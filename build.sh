@@ -93,7 +93,7 @@ if $MKZIP; then
     exit 0
   else
     echo -e "\e[31mThe game pakage over the limt. $ZIP_PACK $pct\e[0m"
-    exit 1
+    $DEBUG && exit 0 || exit 1
   fi
 else
   echo -e "\e[30mBuilt without zip package. Enjoy dist.\e[0m"
