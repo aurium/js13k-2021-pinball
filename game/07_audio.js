@@ -15,7 +15,7 @@ function postPlay(...tones) { // Helper for worker context
   postMessage(['play', tones])
 }
 
-function playTone(freq, start=0, iniGain=1, duration=1, freqEnd, freqEndSec, fadeDelay) {
+function playTone(freq=2, start=0, iniGain=1, duration=1, freqEnd, freqEndSec, fadeDelay) {
   //log(freq, start, duration, freqEnd, freqEndSec, fadeDelay)
   setTimeout(()=> {
     const currTime = audioCtx.currentTime
@@ -37,7 +37,7 @@ if (isMainThread) window.play = window.playTone = playTone // DEBUG
 function initAudio() {
   voiceEN = speechSynthesis && speechSynthesis.getVoices().find(v=>v.lang=='en-US')
   audioCtx = new AudioContext()//({sampleRate: 8000})
-  playTone(10, 0, .1, 99999) // keep the speaker warm
+  playTone() // Warm up speaker
 }
 
 function initMusic() {

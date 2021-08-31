@@ -139,6 +139,11 @@ worker.on_update = update => {
 worker.on_lvlFadeOut = ()=> body.classList.add('lvl-fade')
 worker.on_lvlFadeIn = ()=> body.classList.remove('lvl-fade')
 
+worker.on_over = ()=> {
+  setTimeout(()=> TTS('Sorry... Game Over.'), 1000)
+  body.classList.add('over')
+}
+
 if (isMobile) {
   window.addEventListener("devicemotion", (ev)=> {
     // Chrome will only enable this feature for remote sites.

@@ -30,7 +30,11 @@ body {
 wrapper {
   width: 100vw;
   height: 100vh;
-  filter: drop-shadow(0 0 2vw #000);
+  filter: drop-shadow(0 0 2vw #000) grayscale(0%);
+  transition: filter 4s;
+}
+.over wrapper {
+  filter: drop-shadow(0 0 2vw #000) grayscale(100%);
 }
 
 .rot90, .rot270 {

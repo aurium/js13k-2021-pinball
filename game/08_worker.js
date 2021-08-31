@@ -1,7 +1,7 @@
 if (!isMainThread) { // Running in a WebWorker
 
 let stopped = 0
-balls = [ { x:0, y:0, vx:0, vy:0 }, { x:0, y:0, vx:0, vy:0 } ]
+balls = [ { x:0, y:0, vx:0, vy:0 } ]
 
 onmessage = function(e) {
   const [evName, payload] = e.data;
@@ -63,7 +63,10 @@ function tic() {
         setTimeout(()=> changeLevel(hole[3]), 2000)
         setTimeout(()=> sendMsg('lvlFadeIn'), 2000)
         setTimeout(()=> stopped = 0, 4000)
-        return
+        return postPlay(
+          [200, 0, 1, 1.3, 2000],
+          ...mapFor(200,1000,100,(f)=> [f, f/1000, .5, .3])
+        )
       }
       if (hole = curLevel.bh.find(ballInsideRadius(ball))) {
         log('Drop in a blackhole', hole)
@@ -101,6 +104,12 @@ function killBall(ball) {
       let newBall = {}
       balls.push(newBall)
       resetBall(newBall)
+      return postPlay( // New Ball Song
+        [ 800, 0.0, 0.5, .6],
+        [3000, 0.0, 0.3, .6],
+        [ 800, 0.3, 1.0, .3],
+        [1200, 0.5, 1.0, .5]
+      )
     } else {
       gameOver()
     }
@@ -108,7 +117,14 @@ function killBall(ball) {
 }
 
 function gameOver() {
-  log('TODO: Implement GAME OVER')
+  sendMsg('over')
+  stopped = 1
+  return postPlay(
+    [500, 0, .8, .6], [5000, 0, .2, .6],
+    [400,.2, .8, .6], [4000,.2, .2, .6],
+    [300,.4, .8, .6], [3000,.4, .2, .6],
+    [200,.6, .8,  2], [ 600,.6, .2,  2],
+  )
 }
 
 function actBallColision(b1, b2) {
