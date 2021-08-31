@@ -71,6 +71,8 @@ scopeShared.tic = function() {
   floorIncX = -gravity.x * u
   floorIncY = -gravity.y * u
   canvasFloor.style.transform = `translate(${floorIncX}px, ${floorIncY}px)`
+  // Floor brightness is lighter on nort-west rotation and darker on other end.
+  canvasFloor.style.filter = `brightness(${.6+(1-inclinationVal)/2})`
 
   // Unify the list of elements:
   let els = [
