@@ -26,7 +26,7 @@ body {
   width: 100vw;
   height: 100vh;
   color: #FFF;
-  perspective: 100vw; /* To simulate cell rotation on a desktop */
+  perspective: 100vw; /* To simulate mobile rotation on a desktop */
 }
 
 wrapper {
