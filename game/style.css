@@ -45,6 +45,10 @@ gameset {
   filter: drop-shadow(0 0 2vw #000) grayscale(100%);
 }
 
+/* This was a try to solve screen.orientation.lock failure
+   https://bugzilla.mozilla.org/show_bug.cgi?id=1610745
+   However the screen still fliping. That sux.
+   So I replaced it with the code bellow blocing the landscape screen.
 .rot90, .rot270 {
   --u: 1vh;
   --h: 100vw;
@@ -60,6 +64,29 @@ gameset {
   transform: rotate(90deg);
   top: 0;
   left: 100vw;
+}
+*/
+
+.rot90 gameset {
+  transform-origin: top left;
+  transform: rotate(-90deg);
+  width: 100vh;
+  height: 100vw;
+  top: 100vh;
+}
+
+html:not(.rot0) .is-mobile::after {
+  content: "Please lock device rotation on portrait";
+  text-align: center;
+  color: #FFF;
+  background: #C00;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  padding: 42vh 0;
 }
 
 .not-mobile {

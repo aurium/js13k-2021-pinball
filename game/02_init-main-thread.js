@@ -121,10 +121,8 @@ function lockOrientation() {
     scrOrient
     .lock('portrait-primary')
     .then(res => log('Lock OK!'))
-    .catch(err => notify(
-      'Can not lock orientation on this browser.\n' + err.message +
-      '\nFailover to CSS. (However that will also not work properly on Firefox)' +
-      '\nTry to lock rotation on your mobile configuration.'
+    .catch(err => TTS(
+      'Please, lock the screen rotation on your mobile configuration.'
     ))
   else
     log('This browser has no orientation lock feature! Try failover to CSS.')
