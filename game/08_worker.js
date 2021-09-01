@@ -15,10 +15,10 @@ function sendMsg(evName, payload) {
 
 const on = {
 
-  start() {
+  start(lvlMatch) {
     log('Starting!')
     points = 0
-    changeLevel(0)
+    changeLevel(lvlMatch ? parseInt(lvlMatch[1]) : 0)
     setInterval(tic, 9)
   },
 

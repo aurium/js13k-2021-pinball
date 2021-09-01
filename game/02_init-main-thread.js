@@ -1,11 +1,3 @@
-if (navigator.wakeLock) {
-  navigator.wakeLock.request()
-  .then(()=> log('Screen locked!'))
-  .catch(err=> console.log('Cant lock!', err.message)) // Intentional. console.log will not be removed in production.
-} else {
-  log('This browser has no WakeLock feature')
-}
-
 log('Is Main Thread?', isMainThread)
 let worker, workerIsAlive = 0
 if (isMainThread) {
@@ -23,6 +15,14 @@ if (isMainThread) {
   worker.$ = (evName, payload)=> worker.postMessage([evName, payload])
 
   worker.on_alive = ()=> workerIsAlive = 1
+
+  if (navigator.wakeLock) {
+    navigator.wakeLock.request()
+    .then(()=> log('Screen locked!'))
+    .catch(err=> console.log('Cant lock!', err.message)) // Intentional. console.log will not be removed in production.
+  } else {
+    log('This browser has no WakeLock feature')
+  }
 
   /* INI DEBUG FPS and Stats */
   scopeShared.stats = { begin(){}, end(){} }
@@ -130,6 +130,7 @@ function lockOrientation() {
     log('This browser has no orientation lock feature! Try failover to CSS.')
 }
 
+if (isMainThread && doc.location.href.match(/force-start/)) setTimeout(initGame, 100) // DEBUG
 async function initGame() {
   log('Init Game!')
   initAudio()
@@ -155,7 +156,7 @@ async function initGame() {
 
 function tryToInitGame() {
   if (!workerIsAlive) return setTimeout(tryToInitGame, 200)
-  worker.$('start')
+  worker.$('start', doc.location.href.match(/lvl=([0-9]+)/))
   $('b').remove()
   log('Start animation')
   initMusic()
