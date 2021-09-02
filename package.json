@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cd dist; python3 -m http.server --bind 0.0.0.0 3000",
     "build": "./build.sh",
-    "build:dev": "NOW=$(date +%F_%T); DEBUG=on ./build.sh && echo $NOW > dist/update",
+    "build:dev": "NOW=$(date +%FT%T); DEBUG=on ./build.sh && echo $NOW > dist/update",
     "build:watch": "CMD=build npm run -s build:abstract:watch",
     "build:dev:watch": "CMD=build:dev npm run -s build:abstract:watch",
     "build:abstract:watch": "npm run -r $CMD; while inotifywait -r -e create -e modify -e move -e delete game; do npm run -r $CMD; done",

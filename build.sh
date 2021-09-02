@@ -22,8 +22,8 @@ echo "
 \"use strict\";
 $(cat $(ls -1 game/0*.js))
 " > $DIST/game.js
-now=$(date +%F_%T)
-ls -1 $DIST/*.{js,html} | xargs -L1 sed -ri "s/#BUILD#/$now/"
+now=$(date +%Y%m%d%H%M%S)
+ls -1 $DIST/*.{js,html} | xargs -L1 sed -ri "s/#BUILD#/$now/g"
 
 if ! $DEBUG; then
   # Accept some levels of nested parentheses inside `log()`.
