@@ -177,7 +177,14 @@ const levels = [
     name: 'Inferno',
     info: 'all hope abandon ye who enter here',
     async bg() {
-      return this.bg = []
+      // ctxFloor.fillStyle = mkRadGrad(
+      //   50*u, hCenter*u, 40*u,
+      //   50*u, hCenter*u, 60*u,
+      //   '#B10', 'rgba(0,0,0,0)'
+      // )
+      ctxFloor.clearRect(0, 0, w, h)
+      drawCircle(ctxFloor, 50*u, hCenter*u, 45*u, '#D00')
+      return this.bg = [getFloorImageData()]
 
       ;[
         [49*vw, 50*vh],
@@ -193,28 +200,50 @@ const levels = [
 
     },
     bgFreq: 500,
-    ballStart: [50, hCenter],
+    ballStart: [50, bottom(8)],
     out(ball) {
       return ball.x < 0 || ball.x > 100 ||
              ball.y < 0 || ball.y > hMax
     },
     pins: [
+      [0, 0, 2, 4,   20,80,40],
+      [0, 0, 2, 4,   20,80,40],
+      [0, 0, 2, 4,   30,95,50],
+      [0, 0, 2, 4,   20,80,40],
+      [0, 0, 2, 4,   20,80,40],
     ],
-    wallsV: [],
-    wallsH: [],
-    bh: [
-
+    wallsV: [
+      [45, bottom(10), 5, 4,  30,100,60,.4]
     ],
-    wh: [
-      [10, 10, 6, 3],
+    wallsH: [
+      [47, bottom(3), 25, 4,  30,100,60,.4]
     ],
-    on: {}
+    bh: [[50, hCenter, 20]], // Blackhole [x, y, ray]
+    wh: [[15, 15, 6, 3]], // Wormhole [x, y, ray, destination]
+    on: {
+      tic() {
+        const wh = curLevel.wh[0]
+        const pinA = curLevel.pins[0]
+        const pinB = curLevel.pins[1]
+        const pinC = curLevel.pins[2]
+        const angle = Date.now() / 3000
+        wh[0] = cos(angle)*40 + 50
+        wh[1] = sin(angle)*60 + hCenter
+        for (var i=-2; i<3; i++) {
+          curLevel.pins[i+2][0] = cos(angle+.3-abs(i/10))*(40+i*5) + 50
+          curLevel.pins[i+2][1] = sin(angle+.3-abs(i/10))*(60+i*5) + hCenter
+        }
+      }
+    }
   },
 
   { /* * * LEVEL 3 * * */
     name: 'Clones',
     info: 'freed all of them!',
     async bg() {
+      ctxFloor.fillStyle = '#060'
+      ctxFloor.fillRect(0,0,w,h)
+      this.bg = [getFloorImageData()]
     },
     bgFreq: 500,
     ballStart: [50, hCenter],
@@ -228,7 +257,7 @@ const levels = [
     wallsH: [],
     bh: [],
     wh: [
-      [10, 10, 6, 0],
+      [10, 10, 6, 4],
     ],
     on: {}
   },
@@ -237,6 +266,9 @@ const levels = [
     name: 'Minefield',
     info: 'Caution!',
     async bg() {
+      ctxFloor.fillStyle = '#C90'
+      ctxFloor.fillRect(0,0,w,h)
+      this.bg = [getFloorImageData()]
     },
     bgFreq: 500,
     ballStart: [50, hCenter],
@@ -250,7 +282,7 @@ const levels = [
     wallsH: [],
     bh: [],
     wh: [
-      [10, 10, 6, 0],
+      [10, 10, 6, 5],
     ],
     on: {}
   },
@@ -259,6 +291,9 @@ const levels = [
     name: 'Solaris',
     info: '',
     async bg() {
+      ctxFloor.fillStyle = '#FC0'
+      ctxFloor.fillRect(0,0,w,h)
+      this.bg = [getFloorImageData()]
     },
     bgFreq: 500,
     ballStart: [50, hCenter],
@@ -272,7 +307,7 @@ const levels = [
     wallsH: [],
     bh: [],
     wh: [
-      [10, 10, 6, 0],
+      [10, 10, 6, 1],
     ],
     on: {}
   }

@@ -43,7 +43,7 @@ const ballRay = 3
 let ctxFloor, ctxShadow, ctxPieces
 let gravity = { x:0, y:0, xi:0, yi:0 }
 const localStorageRecordKey = '2021-aurium-spacepinball-record'
-let points = 0, lives = 3, record = 0
+let points = 0, lives = 3, record = 0, ticCounter = 0
 
 let hMid = 0
 let u=1, w=1, h=1, vw=1, vh=1, inclinationVal = 0

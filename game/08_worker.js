@@ -43,10 +43,10 @@ function changeLevel(index) {
   balls = balls.map(resetBall)
 }
 
-let ticCounter = 0
 function tic() {
   ticCounter++
   updateFPS() // DEBUG
+  if (curLevel.on.tic) curLevel.on.tic()
   if (!stopped) {
     balls.map(ball => {
       ball.vx += gravity.x/2000
@@ -83,7 +83,15 @@ function tic() {
     })
   }
   if ((ticCounter%2) === 0) sendMsg('update', {
-    balls: balls.map(values), pins: curLevel.pins, points, lives
+    balls: balls.map(values),
+    curLevel: (()=>{
+      const curLevelUpdate = { ...curLevel }
+      delete curLevelUpdate.bg
+      delete curLevelUpdate.on
+      delete curLevelUpdate.out
+      return curLevelUpdate
+    })(),
+    points, lives
   })
 }
 

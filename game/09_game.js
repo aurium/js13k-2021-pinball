@@ -57,7 +57,7 @@ function setUpLevel() {
 scopeShared.tic = function() {
   scopeShared.stats.begin() // DEBUG
   requestAnimationFrame(scopeShared.tic)
-  //setTimeout(scopeShared.tic, 2000)
+  // setTimeout(scopeShared.tic, 500)
   scopeShared.updateFPS() // DEBUG
   updatePoints()
   if (!curLevel) return;
@@ -144,7 +144,7 @@ worker.on_update = update => {
   points = update.points
   lives = update.lives
   balls = update.balls
-  curLevel.pins = update.pins
+  Object.assign(curLevel, update.curLevel)
 }
 
 worker.on_lvlFadeOut = ()=> body.classList.add('lvl-fade')
