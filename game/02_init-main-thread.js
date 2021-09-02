@@ -16,6 +16,23 @@ if (isMainThread) {
 
   worker.on_alive = ()=> workerIsAlive = 1
 
+  /* INI DEBUG */
+  // Auto reload when the watching builder updates the code.
+  function buildToDate(build) {
+    return new Date(build.replace(/(....)(..)(..)(..)(..)(..)/, '$1-$2-$3T$4:$5:$6'))
+  }
+  if (['localhost','0.0.0.0'].includes(document.location.hostname)) {
+    setInterval(()=> fetch('/update?t='+Date.now())
+      .then(response => response.text())
+      .then(update => {
+        const updateDate = new Date(update.trim())
+        const buildDate = buildToDate('#BUILD#')
+        if (updateDate > buildDate) document.location.reload()
+      })
+      , 1500)
+  }
+  /* END DEBUG */
+
   if (navigator.wakeLock) {
     navigator.wakeLock.request()
     .then(()=> log('Screen locked!'))
@@ -140,9 +157,9 @@ async function initGame() {
     $('b').innerText = `Building...\nLevel ${i}  `
     await promiseAfterScreenUpdate()
     let start = Date.now() // DEBUG
-    log(`Building BG ${i} start...`)
-    await lvl.bg()
-    log(`Building BG ${i} done!`, (Date.now()-start)/1000)
+    log(`Building BG for ${levels[i].name}...`)
+    await lvl.bg(i)
+    log(`Building BG for ${levels[i].name} done!`, (Date.now()-start)/1000)
   }))
   await sequence
 

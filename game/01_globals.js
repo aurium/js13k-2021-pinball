@@ -42,7 +42,8 @@ const wallHalfExp = .75
 const ballRay = 3
 let ctxFloor, ctxShadow, ctxPieces
 let gravity = { x:0, y:0, xi:0, yi:0 }
-const localStorageRecordKey = '2021-aurium-spacepinball-record'
+const gameBaseKey = '2021-aurium-spacepinball-'
+const localStorageRecordKey = gameBaseKey+'record'
 let points = 0, lives = 3, record = 0, ticCounter = 0
 
 let hMid = 0

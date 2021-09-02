@@ -6,6 +6,8 @@ This is a mobile pinball, based on the device's accelerometer.
 You can also play this on a desktop and use your mouse to define the table rotation.
 (I think will be better to understand if you try it on a desktop before trying on a mobile)
 
+It will take time to build in the first time. The next page loads will be **much** faster!
+
 You can add `?lvl=1` to the game URL to start in a specific level.
 
 On a debug build, you can add `?force-start` to start without the user initial interaction.
@@ -40,4 +42,3 @@ The default builder mode is production, so it erases all:
 * Lines ended with `// DEBUG` or `<!--DEBUG-->`
 * Blocks starting with `/* DEBUG INI */`, until next `/* <something> */`.
   In the place of `<something>` we use `/* DEBUG END */` for legibility.
-

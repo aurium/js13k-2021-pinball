@@ -1,20 +1,32 @@
 let curLevel
 const bottom = (num)=> hMax - num
 
+// TODO: Reset level state when the user back into it! Can that become more dificult?
+
+// Idéia:
+// Um level onde o pin que dá ponto cai de um lado, levantando outro do outro lado.
+// Nesse level temos muitos pins pulsantes e a cada ponto as paredes diminuem.
+
 const levels = [
 
   { /* * * LEVEL 0 * * */
+    name: 'start',
     info: 'You can use the wormhole to travell to another level, but avoid the blackhole!',
-    async bg() {
+    async bg(lvlNum) {
       this.bg = []
-      // Create base image:
-      for (let x=0; x<w; x++) for (let y=0; y<h; y++) {
-        ctxFloor.fillStyle = `hsl(${240+(y/h)*70},100%,20%)`
-        ctxFloor.fillRect(x,y,1,1)
+      let base = await getBasePic(lvlNum)
+      if (base && base.width==w && base.height==h) {
+        log('We have a pic cache for first level!')
+      } else {
+        // Create base image:
+        for (let x=0; x<w; x++) for (let y=0; y<h; y++) {
+          ctxFloor.fillStyle = `hsl(${240+(y/h)*70},100%,20%)`
+          ctxFloor.fillRect(x,y,1,1)
+        }
+        base = await mkBGStars(6, .52, 35, -128)
+        addBasePic(lvlNum, base)
       }
-      const base = await mkBGStars(6, .52, 35, -128)
-      // TODO: Write Blackhole and WormHole
-      // const base = getFloorImageData()
+
       // Create Frames:
       ctxFloor.lineWidth = u/2
       for (let f=1; f<7; f++) {
@@ -82,26 +94,32 @@ const levels = [
   { /* * * LEVEL 1 * * */
     name: 'Limitless',
     info: 'Caution! There are no walls to help you.',
-    async bg() {
+    async bg(lvlNum) {
       this.bg = []
-      // Create base image:
-      mkBGJulia(5, .511, -5, -24, 500, 150, 2.5, (x,y)=>
-        `${hypotenuse(x-.5,y-.5)*500},100%,40%`
-      )
+      let base = await getBasePic(lvlNum)
+      if (base && base.width==w && base.height==h) {
+        log('We have a pic cache for Limitless level!')
+      } else {
+        // Create base image:
+        mkBGJulia(5, .511, -5, -24, 500, 150, 2.5, (x,y)=>
+          `${hypotenuse(x-.5,y-.5)*500},100%,40%`
+        )
 
-      ;[5,5,5,5,5,5,0].map(blur => {
-        ctxFloor.filter = `blur(${blur}px)`
-        ctxFloor.font = `bold ${3.5*u}px Arial, "Liberation Sans", sans-serif`
-        ctxFloor.textAlign = 'center'
-        ctxFloor.fillStyle = blur ? '#C0C' : '#FFF'
-        ctxFloor.fillText('Inferno', 10*u, 20*u)
-        ctxFloor.fillText('Clones',  90*u, 20*u)
-        ctxFloor.fillText('Mines',   10*u, 149*u)
-        ctxFloor.fillText('Solaris', 90*u, 149*u)
-      })
-      ctxFloor.filter = `none`
+        ;[5,5,5,5,5,5,0].map(blur => {
+          ctxFloor.filter = `blur(${blur}px)`
+          ctxFloor.font = `bold ${3.5*u}px Arial, "Liberation Sans", sans-serif`
+          ctxFloor.textAlign = 'center'
+          ctxFloor.fillStyle = blur ? '#C0C' : '#FFF'
+          ctxFloor.fillText('Inferno', 10*u, 20*u)
+          ctxFloor.fillText('Clones',  90*u, 20*u)
+          ctxFloor.fillText('Mines',   10*u, 149*u)
+          ctxFloor.fillText('Solaris', 90*u, 149*u)
+        })
+        ctxFloor.filter = `none`
 
-      const base = getFloorImageData()
+        base = getFloorImageData()
+        addBasePic(lvlNum, base)
+      }
 
       // Create Frames:
       ctxFloor.lineWidth = u/2
@@ -176,28 +194,35 @@ const levels = [
   { /* * * LEVEL 2 * * */
     name: 'Inferno',
     info: 'all hope abandon ye who enter here',
-    async bg() {
-      // ctxFloor.fillStyle = mkRadGrad(
-      //   50*u, hCenter*u, 40*u,
-      //   50*u, hCenter*u, 60*u,
-      //   '#B10', 'rgba(0,0,0,0)'
-      // )
-      ctxFloor.clearRect(0, 0, w, h)
-      drawCircle(ctxFloor, 50*u, hCenter*u, 45*u, '#D00')
-      return this.bg = [getFloorImageData()]
+    async bg(lvlNum) {
+      this.bg = []
+      let base = await getBasePic(lvlNum)
+      if (base && base.width==w && base.height==h) {
+        log('We have a pic cache for Inferno level!')
+      } else {
+        // ctxFloor.fillStyle = mkRadGrad(
+        //   50*u, hCenter*u, 40*u,
+        //   50*u, hCenter*u, 60*u,
+        //   '#B10', 'rgba(0,0,0,0)'
+        // )
+        ctxFloor.clearRect(0, 0, w, h)
+        drawCircle(ctxFloor, 50*u, hCenter*u, 45*u, '#D00')
+        base = getFloorImageData()
 
-      ;[
-        [49*vw, 50*vh],
-        [19*vw, 42*vh],
-        [54*vw, 30*vh],
-        [80*vw, 62*vh],
-      ].map(([x, y], i)=> {
-        let fill = f === i
-                 ? mkRadGrad(x,y,u/2, x,y,2*u, '#F20', '#800')
-                 : mkRadGrad(x,y,u/2, x,y,2*u, '#900', '#500')
-        drawCircle(ctxFloor, x, y, 2*u, fill)
-      })
-
+        // ;[
+        //   [49*vw, 50*vh],
+        //   [19*vw, 42*vh],
+        //   [54*vw, 30*vh],
+        //   [80*vw, 62*vh],
+        // ].map(([x, y], i)=> {
+        //   let fill = f === i
+        //            ? mkRadGrad(x,y,u/2, x,y,2*u, '#F20', '#800')
+        //            : mkRadGrad(x,y,u/2, x,y,2*u, '#900', '#500')
+        //   drawCircle(ctxFloor, x, y, 2*u, fill)
+        // })
+        addBasePic(lvlNum, base)
+      }
+      this.bg.push(base)
     },
     bgFreq: 500,
     ballStart: [50, bottom(8)],
@@ -240,10 +265,18 @@ const levels = [
   { /* * * LEVEL 3 * * */
     name: 'Clones',
     info: 'freed all of them!',
-    async bg() {
-      ctxFloor.fillStyle = '#060'
-      ctxFloor.fillRect(0,0,w,h)
-      this.bg = [getFloorImageData()]
+    async bg(lvlNum) {
+      this.bg = []
+      let base = await getBasePic(lvlNum)
+      if (base && base.width==w && base.height==h) {
+        log('We have a pic cache for Clones level!')
+      } else {
+        ctxFloor.fillStyle = '#060'
+        ctxFloor.fillRect(0,0,w,h)
+        base = getFloorImageData()
+        addBasePic(lvlNum, base)
+      }
+      this.bg.push(base)
     },
     bgFreq: 500,
     ballStart: [50, hCenter],
@@ -265,10 +298,18 @@ const levels = [
   { /* * * LEVEL 4 * * */
     name: 'Minefield',
     info: 'Caution!',
-    async bg() {
-      ctxFloor.fillStyle = '#C90'
-      ctxFloor.fillRect(0,0,w,h)
-      this.bg = [getFloorImageData()]
+    async bg(lvlNum) {
+      this.bg = []
+      let base = await getBasePic(lvlNum)
+      if (base && base.width==w && base.height==h) {
+        log('We have a pic cache for Minefield level!')
+      } else {
+        ctxFloor.fillStyle = '#C90'
+        ctxFloor.fillRect(0,0,w,h)
+        base = getFloorImageData()
+        addBasePic(lvlNum, base)
+      }
+      this.bg.push(base)
     },
     bgFreq: 500,
     ballStart: [50, hCenter],
@@ -290,10 +331,18 @@ const levels = [
   { /* * * LEVEL 5 * * */
     name: 'Solaris',
     info: '',
-    async bg() {
-      ctxFloor.fillStyle = '#FC0'
-      ctxFloor.fillRect(0,0,w,h)
-      this.bg = [getFloorImageData()]
+    async bg(lvlNum) {
+      this.bg = []
+      let base = await getBasePic(lvlNum)
+      if (base && base.width==w && base.height==h) {
+        log('We have a pic cache for Solaris level!')
+      } else {
+        ctxFloor.fillStyle = '#FC0'
+        ctxFloor.fillRect(0,0,w,h)
+        base = getFloorImageData()
+        addBasePic(lvlNum, base)
+      }
+      this.bg.push(base)
     },
     bgFreq: 500,
     ballStart: [50, hCenter],
