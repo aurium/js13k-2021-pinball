@@ -101,7 +101,7 @@ const levels = [
         log('We have a pic cache for Limitless level!')
       } else {
         // Create base image:
-        mkBGJulia(5, .511, -5, -24, 500, 150, 2.5, (x,y)=>
+        mkBGJulia(5, .511, -5, -24, 500, [150,100,50], [2.5,0,0], (x,y)=>
           `${hypotenuse(x-.5,y-.5)*500},100%,40%`
         )
 
@@ -195,32 +195,46 @@ const levels = [
   { /* * * LEVEL 2 * * */
     name: 'Inferno',
     info: 'all hope abandon ye who enter here',
+    limits: [
+      [50, hCenter, 46, 66],
+      [46, 154.5, 30, 8.1],
+      [60, 136.7, 16, 20],
+      [5, 6, 20, 40]
+    ],
     async bg(lvlNum) {
       this.bg = []
       let base = await getBasePic(lvlNum)
       if (base && base.width==w && base.height==h) {
         log('We have a pic cache for Inferno level!')
       } else {
-        // ctxFloor.fillStyle = mkRadGrad(
-        //   50*u, hCenter*u, 40*u,
-        //   50*u, hCenter*u, 60*u,
-        //   '#B10', 'rgba(0,0,0,0)'
-        // )
         ctxFloor.clearRect(0, 0, w, h)
-        // Add a texture on this:
-        drawCircle(ctxFloor, 50*u, hCenter*u, [46*u, 66*u], '#D00')
+        mkBGStars(2, .56, 5, 0, .2, 0)
+
+        const [ limElip, ...rects ] = this.limits
+
+        // Clip ellipse to the texture:
+        ctxFloor.save()
+        const clipPath = new Path2D()
+        clipPath.ellipse(
+          limElip[0]*u, limElip[1]*u,
+          limElip[2]*u, limElip[3]*u,
+          0, 0, 2*PI
+        )
+        ctxFloor.clip(clipPath)
+        // Red texture:
+        mkBGJulia(400, .56, 0, 0, 400, [-10,100,0], [.1,0,.25], (x,y)=>
+          `0,0%,0%`
+        )
+        ctxFloor.restore()
+
+        // Draw wood floor:
         let grad = ctxFloor.createLinearGradient(0,2, 0,h+2)
         mapFor(0,166,1,(i)=> {
-          if (i%2) {
-            grad.addColorStop((i+.5)/166, '#400')
-          } else {
-            grad.addColorStop(i/166, '#A32')
-          }
+          if (i%2) grad.addColorStop((i+.5)/166, '#200')
+          else grad.addColorStop(i/166, '#832')
         })
         ctxFloor.fillStyle = grad
-        ctxFloor.fillRect(46*u, 154.5*u, 30*u, 8.1*u)
-        ctxFloor.fillRect(66*u, 136.7*u, 10*u, 20*u)
-        ctxFloor.fillRect(5*u, 6*u, 20*u, 40*u)
+        rects.map(rect => ctxFloor.fillRect(...rect.map(i=>i*u)) )
         base = getFloorImageData()
 
         // ;[
@@ -234,15 +248,24 @@ const levels = [
         //            : mkRadGrad(x,y,u/2, x,y,2*u, '#900', '#500')
         //   drawCircle(ctxFloor, x, y, 2*u, fill)
         // })
-        addBasePic(lvlNum, base)
       }
+      addBasePic(lvlNum, base)
+      //paintRealFoor(this) // DEBUG
+      //base = getFloorImageData() // DEBUG
       this.bg.push(base)
     },
     bgFreq: 500,
     ballStart: [50, bottom(8)],
-    out(ball) {
-      return ball.x < 0 || ball.x > 100 ||
-             ball.y < 0 || ball.y > hMax
+    out({x,y}) {
+      const [ limElip, ...rects ] = this.limits
+      return hypotenuse(
+               (x-limElip[0])/(limElip[2]+1),
+               (y-limElip[1])/(limElip[3]+1)
+             ) > 1 &&
+             !rects.find(([rx,ry,w,h])=>
+               (x+1) > rx && (x-1) < (w+rx) &&
+               (y+1) > ry && (y-1) < (h+ry)
+             )
     },
     pins: [
       ...mapFor(1, 13, 1, (x)=>
@@ -275,11 +298,18 @@ const levels = [
         // curLevel.pins[0][1] = y
         curLevel.pins.map(p => {
           if ( hypotenuse(p[0]-x, p[1]-y) < 10 ) {
-            lowerPin(p)
+            lowerPin(p, .2)
           } else {
-            risePin(p, 4)
+            risePin(p, 4, .2)
           }
         })
+      },
+      colidePin(pin, inpactPower) {
+        if (pin[6]==10) {
+          pin[2] = 2.5
+          setTimeout(()=> downPinProp(pin, 2, 1.5, .3), 100)
+        }
+        points += ~~(inpactPower*20)
       }
     }
   },
@@ -385,23 +415,23 @@ const levels = [
 
 ]
 
-function lowerPin(pin, repeat) {
+function lowerPin(pin, speed=.1, repeat) {
   if (pin.lowTO && !repeat) return;
   if (pin.riseTO) clearTimeout(pin.riseTO)
   delete pin.riseTO
-  pin[3] -= .1
+  pin[3] -= speed
   // TODO: make it with downPinProp
   //pin[6] = (pin[3]*10 + pin[6]) / 2
   if (pin[3] <= 0) pin[3] = 0
-  else pin.lowTO = setTimeout(()=> lowerPin(pin, 1), 60)
+  else pin.lowTO = setTimeout(()=> lowerPin(pin, speed, 1), 60)
 }
-function risePin(pin, h, repeat) {
+function risePin(pin, h, speed=.1, repeat) {
   if (pin.riseTO && !repeat) return;
   if (pin.lowTO) clearTimeout(pin.lowTO)
   delete pin.lowTO
-  pin[3] += .1
+  pin[3] += speed
   if (pin[3] >= h) pin[3] = h
-  else pin.riseTO = setTimeout(()=> risePin(pin, h, 1), 60)
+  else pin.riseTO = setTimeout(()=> risePin(pin, h, speed, 1), 60)
 }
 
 function downPinProp(pin, prop, to=0, step=2) {
@@ -411,3 +441,14 @@ function downPinProp(pin, prop, to=0, step=2) {
 }
 
 const getFloorImageData = ()=> ctxFloor.getImageData(0, 0, w, h)
+
+/* DEBUG INI */
+function paintRealFoor(lvl) {
+  ctxFloor.fillStyle = 'rgba(0,255,0,.3)'
+  for (let x=0; x<w; x++) for (let y=0; y<h; y++) {
+    if (!lvl.out({ x:x/u, y:y/u })) {
+      ctxFloor.fillRect(x,y,1,1)
+    }
+  }
+}
+/* DEBUG END */

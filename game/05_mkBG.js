@@ -1,25 +1,3 @@
-function mkBGMandelbroat(zoom, posX, posY, maxIteration=200, hueIni=0, hueMult=2) {
-  posX *= u
-  posY *= u
-  for (let pixY=0; pixY<h; pixY++) for (let pixX=0; pixX<w; pixX++) {
-    let cX = w/2 + posX*zoom
-    let cY = h/2 + posY*zoom
-    let x0 = ((pixY-cY)/w) / zoom
-    let y0 = ((pixX-cX)/w) / zoom
-    let x=0, y=0, iteration=0
-    while ((x*x + y*y) <= 4 && iteration < maxIteration) {
-      let tempX = x*x - y*y + x0
-      y = 2*x*y + y0
-      x = tempX
-      iteration++
-    }
-    ctxFloor.fillStyle = `rgb(${iteration*10-1200},0,0)`
-    ctxFloor.fillStyle = `hsl(${hueIni+hueMult*iteration},100%,50%)`
-    ctxFloor.fillRect(pixX, pixY, 1, 1)
-  }
-  return ctxFloor.getImageData(0, 0, w, h)
-}
-
 function calcJuliaPx(zoom, z, posXu, posYu, pixX, pixY, maxIteration) {
   let interation
   let cX = w/2 + posXu*zoom
@@ -37,14 +15,14 @@ function calcJuliaPx(zoom, z, posXu, posYu, pixX, pixY, maxIteration) {
   return interation
 }
 
-function mkBGJulia(zoom, z=.52, posX, posY, maxIteration=200, hueIni=0, hueMult=2, limColor=()=>'0,0%,15%') {
+function mkBGJulia(zoom, z=.52, posX, posY, maxIteration=200, colorIni=[0,100,50], colorMult=[2,0,0], limColor=()=>'0,0%,15%') {
   posX *= u
   posY *= u
   for (let pixY=0; pixY<h; pixY++) for (let pixX=0; pixX<w; pixX++) {
     let i = calcJuliaPx(zoom, z, posX, posY, pixX, pixY, maxIteration)
     let color = (i>maxIteration)
               ? `hsla(${limColor(pixX/w, pixY/h)},`
-              : `hsla(${hueIni+hueMult*i},100%,50%,`
+              : `hsla(${colorIni[0]+colorMult[0]*i},${colorIni[1]+colorMult[1]*i}%,${colorIni[2]+colorMult[2]*i}%,`
     ctxFloor.fillStyle = color+'1)'
     ctxFloor.fillRect(pixX, pixY, 1, 1)
     ctxFloor.fillStyle = color+'.5)'
@@ -80,20 +58,21 @@ function blurFloor(radius) {
   ctxFloor.putImageData(img, 0, 0)
 }
 
-async function mkBGStars(zoom, z, posX, posY, starChance=.3) {
+async function mkBGStars(zoom, z, posX, posY, starChance=.3, drawClouds=1) {
   posX *= u
   posY *= u
-  // Draw Clouds
-  let cloudPix = ~~u
-  if (cloudPix%2 !=0) cloudPix--
-  for (let pixY=0; pixY<h; pixY+=cloudPix) {
-    for (let pixX=0; pixX<w; pixX+=cloudPix) {
-      let i = calcJuliaPx(zoom, z, posX, posY, pixX, pixY, 150)/150
-      ctxFloor.fillStyle = `hsla(${150*i+340},100%,${50 + i*50}%,${i*.9})`
-      ctxFloor.fillRect(pixX-cloudPix/2, pixY-cloudPix/2, cloudPix, cloudPix)
+  if (drawClouds) {
+    let cloudPix = ~~u
+    if (cloudPix%2 !=0) cloudPix--
+    for (let pixY=0; pixY<h; pixY+=cloudPix) {
+      for (let pixX=0; pixX<w; pixX+=cloudPix) {
+        let i = calcJuliaPx(zoom, z, posX, posY, pixX, pixY, 150)/150
+        ctxFloor.fillStyle = `hsla(${150*i+340},100%,${50 + i*50}%,${i*.9})`
+        ctxFloor.fillRect(pixX-cloudPix/2, pixY-cloudPix/2, cloudPix, cloudPix)
+      }
     }
+    blurFloor(cloudPix)
   }
-  blurFloor(cloudPix)
   // Draw Stars
   ctxFloor.globalCompositeOperation = 'lighter'
   for (let pixY=0; pixY<h; pixY++) {
