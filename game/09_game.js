@@ -36,7 +36,7 @@ let changeFooterFrameInterval
 worker.on_setLvl = (index)=> {
   curLevel = {...levels[index]}
   if (curLevel.name) TTS('Moving to ' + curLevel.name)
-  if (curLevel.info) TTS(curLevel.info)
+  if (curLevel.info) TTS(curLevel.info, .8)
   log('Moving to level', index, curLevel.name)
   curLevel.curBG = 0
   ctxFloor.mustUpdate = 1

@@ -2,10 +2,11 @@ const speechSynthesis = isMainThread && window.speechSynthesis
 let voiceEN
 let audioCtx
 
-function TTS(text) {
+function TTS(text, rate=1) {
   if (voiceEN) {
     const speak = new SpeechSynthesisUtterance(text)
     speak.voice = voiceEN
+    speak.rate = rate
     speechSynthesis.speak(speak)
   }
 }

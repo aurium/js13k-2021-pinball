@@ -139,7 +139,7 @@ function lockOrientation() {
     .lock('portrait-primary')
     .then(res => log('Lock OK!'))
     .catch(err => TTS(
-      'Please, lock the screen rotation on your mobile configuration.'
+      'Please, lock the screen rotation on your mobile configuration.', .8
     ))
   else
     log('This browser has no orientation lock feature! Try failover to CSS.')
@@ -149,7 +149,7 @@ if (isMainThread && doc.location.search.match(/force-start/)) setTimeout(initGam
 async function initGame() {
   log('Init Game!')
   initAudio()
-  TTS('Please wait! It is building...')
+  TTS('Please wait! It is building!', .8)
   await promiseAfterScreenUpdate()
   preSetupDone = 1
   let sequence = Promise.resolve()
