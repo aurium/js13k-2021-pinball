@@ -145,7 +145,7 @@ function lockOrientation() {
     log('This browser has no orientation lock feature! Try failover to CSS.')
 }
 
-if (isMainThread && doc.location.href.match(/force-start/)) setTimeout(initGame, 100) // DEBUG
+if (isMainThread && doc.location.search.match(/force-start/)) setTimeout(initGame, 100) // DEBUG
 async function initGame() {
   log('Init Game!')
   initAudio()
@@ -158,20 +158,26 @@ async function initGame() {
     await promiseAfterScreenUpdate()
     let start = Date.now() // DEBUG
     log(`Building BG for ${levels[i].name}...`)
-    await lvl.bg(i)
+    let onlyLvl = doc.location.search.match(/only-lvl=([0-9]+)/) // DEBUG
+    onlyLvl = onlyLvl ? parseInt(onlyLvl[1]) : -1 // DEBUG
+    if (onlyLvl == -1 || onlyLvl == i) // DEBUG
+      await lvl.bg(i) // Real code!
+    else Promise.resolve() // DEBUG
     log(`Building BG for ${levels[i].name} done!`, (Date.now()-start)/1000)
   }))
   await sequence
 
   log('Set Header BG')
-  ctxFloor.putImageData(levels[1].bg[0], 0, 0)
-  $('pre').style.backgroundImage = `url(${canvasFloor.toDataURL()})`
+  if (levels[1].bg[0]) {
+    ctxFloor.putImageData(levels[1].bg[0], 0, 0)
+    $('pre').style.backgroundImage = `url(${canvasFloor.toDataURL()})`
+  }
   tryToInitGame()
 }
 
 function tryToInitGame() {
   if (!workerIsAlive) return setTimeout(tryToInitGame, 200)
-  worker.$('start', doc.location.href.match(/lvl=([0-9]+)/))
+  worker.$('start', doc.location.search.match(/lvl=([0-9]+)/))
   $('b').remove()
   log('Start animation')
   initMusic()

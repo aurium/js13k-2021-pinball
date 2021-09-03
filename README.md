@@ -8,9 +8,11 @@ You can also play this on a desktop and use your mouse to define the table rotat
 
 It will take time to build in the first time. The next page loads will be **much** faster!
 
-You can add `?lvl=1` to the game URL to start in a specific level.
+You can add `?lvl=<num>` to the game URL to start in a specific level.
 
-On a debug build, you can add `?force-start` to start without the user initial interaction.
+On a debug build, you can add:
+* `force-start` to start without the user initial interaction.
+* `only-lvl=<num>` to generate only one level. (Good for testing with `lvl=<num>`)
 
 Developing
 ----------

@@ -180,6 +180,7 @@ const levels = [
       colidePin(pin) {
         const { i, go } = pin[7]
         if (i == 15) { // Touch the red pin!
+          points += 50
           pin[7].i = 1 // Disable it
           downPinProp(pin, 5) // Grayfy it
           postPlay([1000, 0, .5, 1, 100])
@@ -206,7 +207,20 @@ const levels = [
         //   '#B10', 'rgba(0,0,0,0)'
         // )
         ctxFloor.clearRect(0, 0, w, h)
-        drawCircle(ctxFloor, 50*u, hCenter*u, 45*u, '#D00')
+        // Add a texture on this:
+        drawCircle(ctxFloor, 50*u, hCenter*u, [46*u, 66*u], '#D00')
+        let grad = ctxFloor.createLinearGradient(0,2, 0,h+2)
+        mapFor(0,166,1,(i)=> {
+          if (i%2) {
+            grad.addColorStop((i+.5)/166, '#400')
+          } else {
+            grad.addColorStop(i/166, '#A32')
+          }
+        })
+        ctxFloor.fillStyle = grad
+        ctxFloor.fillRect(46*u, 154.5*u, 30*u, 8.1*u)
+        ctxFloor.fillRect(66*u, 136.7*u, 10*u, 20*u)
+        ctxFloor.fillRect(5*u, 6*u, 20*u, 40*u)
         base = getFloorImageData()
 
         // ;[
@@ -231,33 +245,41 @@ const levels = [
              ball.y < 0 || ball.y > hMax
     },
     pins: [
-      [0, 0, 2, 4,   20,80,40],
-      [0, 0, 2, 4,   20,80,40],
-      [0, 0, 2, 4,   30,95,50],
-      [0, 0, 2, 4,   20,80,40],
-      [0, 0, 2, 4,   20,80,40],
+      ...mapFor(1, 13, 1, (x)=>
+        mapFor(1, 20, 1, (y)=> {
+          if ((x+y)%2 == 0
+          && hypotenuse(x*7.16-50, y*7.57-hCenter)>28
+          && hypotenuse((x*7.16-50)*1.1, (y*7.57-hCenter)*.75)<50) {
+            return ((x**2+y)%7 == 0)
+            ? [x*7.16, y*7.57, 1.5, 4,  0,20,10]
+            : [x*7.16, y*7.57, 1.5, 4,  0,90,30]
+          }
+        })
+      ).flat().filter(pin => pin)
     ],
     wallsV: [
-      [45, bottom(10), 5, 4,  30,100,60,.4]
+      [45, bottom(10), 5, 4,  0,100,60,.4]
     ],
     wallsH: [
-      [47, bottom(3), 25, 4,  30,100,60,.4]
+      [47, bottom(3), 25, 4,  0,100,60,.4]
     ],
     bh: [[50, hCenter, 20]], // Blackhole [x, y, ray]
     wh: [[15, 15, 6, 3]], // Wormhole [x, y, ray, destination]
     on: {
       tic() {
-        const wh = curLevel.wh[0]
-        const pinA = curLevel.pins[0]
-        const pinB = curLevel.pins[1]
-        const pinC = curLevel.pins[2]
-        const angle = Date.now() / 3000
-        wh[0] = cos(angle)*40 + 50
-        wh[1] = sin(angle)*60 + hCenter
-        for (var i=-2; i<3; i++) {
-          curLevel.pins[i+2][0] = cos(angle+.3-abs(i/10))*(40+i*5) + 50
-          curLevel.pins[i+2][1] = sin(angle+.3-abs(i/10))*(60+i*5) + hCenter
-        }
+        // TODO: Make black ones to pulse
+        const angle = Date.now() / 5000
+        let x = cos(angle)*35 + 50
+        let y = sin(angle)*35 + hCenter
+        // curLevel.pins[0][0] = x
+        // curLevel.pins[0][1] = y
+        curLevel.pins.map(p => {
+          if ( hypotenuse(p[0]-x, p[1]-y) < 10 ) {
+            lowerPin(p)
+          } else {
+            risePin(p, 4)
+          }
+        })
       }
     }
   },
@@ -363,11 +385,23 @@ const levels = [
 
 ]
 
-function lowerPin(pin) {
+function lowerPin(pin, repeat) {
+  if (pin.lowTO && !repeat) return;
+  if (pin.riseTO) clearTimeout(pin.riseTO)
+  delete pin.riseTO
   pin[3] -= .1
-  pin[6] = (pin[3]*10 + pin[6]) / 2
+  // TODO: make it with downPinProp
+  //pin[6] = (pin[3]*10 + pin[6]) / 2
   if (pin[3] <= 0) pin[3] = 0
-  else setTimeout(()=> lowerPin(pin), 60)
+  else pin.lowTO = setTimeout(()=> lowerPin(pin, 1), 60)
+}
+function risePin(pin, h, repeat) {
+  if (pin.riseTO && !repeat) return;
+  if (pin.lowTO) clearTimeout(pin.lowTO)
+  delete pin.lowTO
+  pin[3] += .1
+  if (pin[3] >= h) pin[3] = h
+  else pin.riseTO = setTimeout(()=> risePin(pin, h, 1), 60)
 }
 
 function downPinProp(pin, prop, to=0, step=2) {

@@ -155,8 +155,9 @@ function mkBGGradient() {
 }
 
 function drawCircle(ctx, x, y, r, fill, stroke) {
+  let [rx, ry] = r.length ? r : [r, r]
   ctx.beginPath()
-  ctx.ellipse(x, y, r, r, 0, 0, 2*PI)
+  ctx.ellipse(x, y, rx, ry, 0, 0, 2*PI)
   ctx.fillStyle = fill
   ctx.fill()
   if (stroke) {
