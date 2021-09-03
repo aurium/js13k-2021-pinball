@@ -281,10 +281,12 @@ const levels = [
       ).flat().filter(pin => pin)
     ],
     wallsV: [
-      [45, bottom(10), 5, 4,  0,100,60,.4]
+      [45, bottom(11), 6, 4,  0,100,60,.4],
+      [77, bottom(13), 8, 4,  0,100,60,.4]
     ],
     wallsH: [
-      [47, bottom(3), 25, 4,  0,100,60,.4]
+      [47, bottom(13), 12, 4,  0,100,60,.4],
+      [47, bottom(3), 28, 4,  0,100,60,.4]
     ],
     bh: [[50, hCenter, 20]], // Blackhole [x, y, ray]
     wh: [[15, 15, 6, 3]], // Wormhole [x, y, ray, destination]
