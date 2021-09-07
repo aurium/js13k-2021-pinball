@@ -402,10 +402,18 @@ const levels = [
           ctxFloor.fillRect(x,y,1,1)
         }
         await mkBGStars(6, .55, 3, -1, .1, 0)
+
+        paintBoomLamps()
         base = getFloorImageData()
         addBasePic(lvlNum, base)
       }
-      this.bg.push(base)
+      ctxFloor.filter = `blur(${u}px)`
+      mapFor(0,2,1,(i)=> {
+        ctxFloor.putImageData(base, 0, 0)
+        paintBoomLamps('#F22', 1, i)
+        this.bg.push(getFloorImageData())
+      })
+      ctxFloor.filter = `none`
     },
     bgFreq: 500,
     ballStart: [30, 136],
@@ -417,6 +425,11 @@ const levels = [
       [ 3, 95, 1.5, 4,  0, 0,30],
       [22, 88, 1.5, 4,  0, 0,30],
       [29, 86, 1.5, 4,  0, 0,30],
+      ...mapFor(0,5,1, (x)=> mapFor(0,9,1, (y)=>
+        ( (x==0 && y==0) || x<4 && y>3 ) ? 0 :
+        [x*16+10, y*16+10, 2, 1,   0,80,40, 1, (x+y)%2]
+      )).flat().filter(p => p),
+      [3*16+10, 6*16+10, 2, 1,   0,80,40, 1]
     ],
     wallsV: [],
     wallsH: [],
@@ -427,7 +440,30 @@ const levels = [
     wh: [
       [10, 10, 6, 5],
     ],
-    on: {}
+    on: {
+      tic() {
+        if (balls.length == 1) {
+          curLevel.pins.map(pin => pin[8] && curLevel.on.killPin(pin))
+        }
+      },
+      colidePin(pin, inpactPower, ball) {
+        if (pin[7]) {
+          // It is a Kick pin
+          pin[2] = 3
+          ball.vx *= min(3, 3 - inpactPower)
+          ball.vy *= min(3, 3 - inpactPower)
+          setTimeout(()=> {
+            curLevel.on.killPin(pin)
+          }, 100)
+        }
+      },
+      killPin(pin) {
+        pin[2] = 3
+        lowerPin(pin)
+        downPinProp(pin, 5,50, .3)
+        downPinProp(pin, 6, 3, .3)
+      }
+    }
   },
 
   { /* * * LEVEL 5 * * */

@@ -150,3 +150,20 @@ function mkRadGrad(x1,y1,r1, x2,y2,r2, ...colors) {
   colors.map((c, i)=> grad.addColorStop(i/(colors.length-1), c))
   return grad
 }
+
+function paintBoomLamps(color='#711', lineWidth=2.5, index=9) {
+  ctxFloor.strokeStyle = color
+  ctxFloor.lineWidth = lineWidth*u
+  ctxFloor.beginPath()
+  mapFor(0,2,1,(s)=> {
+    if (index == s || index == 9) {
+      ctxFloor.moveTo(32*u, 135*u + (11+8.5*s)*u)
+      mapFor(1,17,1,(i)=> {
+        let r = (i%2==0) ? 11+8.5*s : 6+5.5*s
+        let a = PI2 * i/16
+        ctxFloor.lineTo(32*u + sin(a)*r*u, 135*u + cos(a)*r*u)
+      })
+    }
+  })
+  ctxFloor.stroke()
+}
