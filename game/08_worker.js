@@ -47,10 +47,38 @@ function resetBall(ball, index=null) {
   return ball
 }
 
+function killBall(ball) {
+  postPlay(
+    //freq, start, iniGain, duration, freqEnd
+    [1600,  0,     .8,      1,        200]
+  )
+  balls = balls.filter(b => b != ball)
+  if (!balls.length) {
+    lives--
+    if (lives > 0) setTimeout(createBall, 1500)
+    else setTimeout(gameOver, 1500)
+  }
+}
+
+let gameStopped = 0
+function gameOver() {
+  sendMsg('over')
+  gameStopped = 1
+  return postPlay(
+    [500, 0, .8, .6], [5000, 0, .2, .6],
+    [400,.2, .8, .6], [4000,.2, .2, .6],
+    [300,.4, .8, .6], [3000,.4, .2, .6],
+    [200,.6, .8,  2], [ 600,.6, .2,  2],
+  )
+}
+
+function sendMsg(evName, payload) {
+  postMessage([evName, payload])
+}
+
 if (!isMainThread) { // Running in a WebWorker
 
 let nextLifeUp = 1000
-let stopped = 0
 balls = [ { x:0, y:0, vx:0, vy:0 } ]
 //balls = mapFor(0,67,1,() => ({ x:0, y:0, vx:0, vy:0 }))
 
@@ -58,10 +86,6 @@ onmessage = function(e) {
   const [evName, payload] = e.data;
   if (on[evName]) on[evName](payload)
   else log('Unknown event', evName)
-}
-
-function sendMsg(evName, payload) {
-  postMessage([evName, payload])
 }
 
 const on = {
@@ -90,7 +114,7 @@ function tic() {
   ticCounter++
   updateFPS() // DEBUG
   if (curLevel.on.tic) curLevel.on.tic()
-  if (!stopped) {
+  if (!gameStopped) {
     balls.map(ball => {
       ball.vx += gravity.x/2000
       ball.vy += gravity.y/2000
@@ -101,11 +125,11 @@ function tic() {
       let hole
       if (hole = curLevel.wh.find(ballInsideRadius(ball))) {
         log('Enter in a wormhole', hole)
-        stopped = 1
+        gameStopped = 1
         sendMsg('lvlFadeOut')
         setTimeout(()=> changeLevel(hole[3]), 2000)
         setTimeout(()=> sendMsg('lvlFadeIn'), 2000)
-        setTimeout(()=> stopped = 0, 4000)
+        setTimeout(()=> gameStopped = 0, 4000)
         return postPlay(
           [200, 0, 1, 1.3, 2000],
           ...mapFor(200,1000,100,(f)=> [f, f/1000, .5, .3])
@@ -158,30 +182,6 @@ function pinIsUp(pin) {
 function ballInsideRadius(ball) {
   // "other" can be any obj definition where the radius is the third array item
   return (other)=> calcDist(ball, {x:other[0], y:other[1]})[2] < other[2]
-}
-
-function killBall(ball) {
-  postPlay(
-    //freq, start, iniGain, duration, freqEnd
-    [1600,  0,     .8,      1,        200]
-  )
-  balls = balls.filter(b => b != ball)
-  if (!balls.length) {
-    lives--
-    if (lives > 0) setTimeout(createBall, 1500)
-    else setTimeout(gameOver, 1500)
-  }
-}
-
-function gameOver() {
-  sendMsg('over')
-  stopped = 1
-  return postPlay(
-    [500, 0, .8, .6], [5000, 0, .2, .6],
-    [400,.2, .8, .6], [4000,.2, .2, .6],
-    [300,.4, .8, .6], [3000,.4, .2, .6],
-    [200,.6, .8,  2], [ 600,.6, .2,  2],
-  )
 }
 
 function actBallColision(b1, b2) {

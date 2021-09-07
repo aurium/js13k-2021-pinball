@@ -401,7 +401,7 @@ const levels = [
           ctxFloor.fillStyle = `hsl(${240 + 40*(y/h)**2 + 40*x/w},100%,${40-(y/h)*20}%)`
           ctxFloor.fillRect(x,y,1,1)
         }
-        await mkBGStars(6, .55, 3, -1, .1, 0)
+        await mkBGStars(6, .55, 0, 0, .1, 0)
 
         paintBoomLamps()
         base = getFloorImageData()
@@ -475,28 +475,70 @@ const levels = [
       if (base && base.width==w && base.height==h) {
         log('We have a pic cache for Solaris level!')
       } else {
-        ctxFloor.fillStyle = '#FC0'
-        ctxFloor.fillRect(0,0,w,h)
+        // Create base image:
+        await mkBGStars(5, .55, -10, 0, .1, 0)
+        const cx=50*u, cy=hCenter*u
+        drawCircle(
+          ctxFloor, cx, cy, 21*u,
+          mkRadGrad(cx,cy,17*u, cx,cy,21*u,
+            '#FF0', '#F80', 'rgba(255,0,0,0)'
+          )
+        )
+        ctxFloor.globalCompositeOperation = 'lighter'
+        //ctxFloor.filter = `blur(.8px)`
+        ctxFloor.strokeStyle = 'rgba(255,30,0,.5)' //'#F20'
+        mapFor(0,PI2,.1,(a)=> {
+          ctxFloor.save()
+          ctxFloor.translate(cx, cy)
+          ctxFloor.rotate(a)
+          ctxFloor.beginPath()
+          const rx = rnd(8,18)*u
+          const ry = rnd(2,7)*u
+          ctxFloor.moveTo(15*u + rx, 0)
+          for (let i=0; i<8; i++) {
+            ctxFloor.ellipse(15*u-i/9, 0, rx, ry-i*1.2, 0, 0, PI2)
+            ctxFloor.stroke()
+          }
+          ctxFloor.restore()
+        })
+        //ctxFloor.filter = `none`
+        ctxFloor.globalCompositeOperation = 'source-over'
         base = getFloorImageData()
         addBasePic(lvlNum, base)
       }
       this.bg.push(base)
     },
     bgFreq: 500,
-    ballStart: [50, hCenter],
+    ballStart: [50, 120],
     out(ball) {
       return ball.x < 0 || ball.x > 100 ||
              ball.y < 0 || ball.y > hMax
     },
     pins: [
+      [50, hCenter, 15, 1,  60,100,50, 1]
     ],
-    wallsV: [],
-    wallsH: [],
+    wallsV: [
+      [ 5,6,18, 7, 0,0,100, .3],
+      [25,6,18, 7, 0,0,100, .3],
+    ],
+    wallsH: [
+      [6, 5,18, 7, 0,0,100, .3],
+      [6,25,18, 7, 0,0,100, .3],
+    ],
     bh: [],
     wh: [
-      [10, 10, 6, 1],
+      [15, 15, 6, 1],
     ],
-    on: {}
+    on: {
+      colidePin(pin, inpactPower, ball) {
+        if (pin[7] == 1) { // Sun
+          pin[4] = 20
+          setTimeout(()=> pin[4] = 60, 200)
+          postTTS('Ups! You droped in the sun!')
+          killBall(ball)
+        }
+      }
+    }
   }
 
 ]
