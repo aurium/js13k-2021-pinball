@@ -447,6 +447,7 @@ const levels = [
         }
       },
       colidePin(pin, inpactPower, ball) {
+        points += ~~(inpactPower*10)
         if (pin[7]) {
           // It is a Kick pin
           pin[2] = 3
@@ -468,7 +469,7 @@ const levels = [
 
   { /* * * LEVEL 5 * * */
     name: 'Solaris',
-    info: '',
+    info: 'visit Mercury, Earth and Mars in this sequence.',
     async bg(lvlNum) {
       this.bg = []
       let base = await getBasePic(lvlNum)
@@ -476,14 +477,28 @@ const levels = [
         log('We have a pic cache for Solaris level!')
       } else {
         // Create base image:
-        await mkBGStars(5, .55, -10, 0, .1, 0)
         const cx=50*u, cy=hCenter*u
+        ctxFloor.fillStyle = mkRadGrad(cx,cy,30*u, cx,cy,90*u,
+          '#000', '#025'
+        )
+        ctxFloor.fillRect(0,0,w,h)
+        await mkBGStars(5, .55, -10, 0, .1, 0)
         drawCircle(
           ctxFloor, cx, cy, 21*u,
           mkRadGrad(cx,cy,17*u, cx,cy,21*u,
             '#FF0', '#F80', 'rgba(255,0,0,0)'
           )
         )
+
+        ctxFloor.font = `normal ${3.5*u}px Arial, "Liberation Sans", sans-serif`
+        ctxFloor.textAlign = 'center'
+        ctxFloor.fillStyle = '#000'
+        const txt = 'Mercury ⇒ Earth ⇒ Mars'
+        ctxFloor.fillText(txt, 66*u-2, 15*u-2)
+        ctxFloor.fillText(txt, 66*u+2, 15*u+2)
+        ctxFloor.fillStyle = '#CEF'
+        ctxFloor.fillText(txt, 66*u, 15*u)
+
         ctxFloor.globalCompositeOperation = 'lighter'
         //ctxFloor.filter = `blur(.8px)`
         ctxFloor.strokeStyle = 'rgba(255,30,0,.5)' //'#F20'
@@ -509,33 +524,84 @@ const levels = [
       this.bg.push(base)
     },
     bgFreq: 500,
-    ballStart: [50, 120],
+    ballStart: [90, 155],
     out(ball) {
       return ball.x < 0 || ball.x > 100 ||
              ball.y < 0 || ball.y > hMax
     },
     pins: [
-      [50, hCenter, 15, 1,  60,100,50, 1]
+      [50, hCenter, 15, 1,  60,100,50, 1],
+      [50, 120, 4, 1,    0,10,30, 2],
+      [50, 135, 6, 1,  240,80,50, 3],
+      [50, 150, 5, 1,   20,70,40, 4],
+      ...mapFor(  4, 20, 2,(y)=> [22,  y, 1, 7,  0,0,90, 9,1]),
+      ...mapFor( 35, 95,10,(x)=> [ x,  5, 2, 3,  0,0,40, 5]),
+      ...mapFor( 15, 25,10,(y)=> [95,  y, 2, 3,  0,0,40, 5]),
+      ...mapFor(  5, 75,10,(x)=> [ x,160, 2, 3,  0,0,40, 5]),
+      ...mapFor(140,150,10,(y)=> [ 5,  y, 2, 3,  0,0,40, 5]),
     ],
     wallsV: [
-      [ 5,6,18, 7, 0,0,100, .3],
-      [25,6,18, 7, 0,0,100, .3],
+      [ 2,3,18, 7, 0,0,100, .3],
+      [99,bottom(20),18, 3, 220,90,100, .2],
     ],
     wallsH: [
-      [6, 5,18, 7, 0,0,100, .3],
-      [6,25,18, 7, 0,0,100, .3],
+      [3, 2,20, 7, 0,0,100, .3],
+      [3,22,20, 7, 0,0,100, .3],
+      [80,bottom(1),18, 3, 220,90,100, .2],
     ],
     bh: [],
-    wh: [
-      [15, 15, 6, 1],
-    ],
+    wh: [[12, 12, 6, 1]],
     on: {
+      tic() {
+        curLevel.pins.slice(1,4).map((p, i)=> {
+          const ang = Date.now() / (4000+i*4000)
+          p[0] = 50 - sin(ang) * (i+2)*15
+          p[1] = hCenter + cos(ang) * (i+2)*15
+        })
+      },
       colidePin(pin, inpactPower, ball) {
         if (pin[7] == 1) { // Sun
           pin[4] = 20
           setTimeout(()=> pin[4] = 60, 200)
           postTTS('Ups! You droped in the sun!')
           killBall(ball)
+        }
+        if (pin[7] == 5) { // Kick a border pin
+          points += 20
+          lowerPin(pin)
+          downPinProp(pin, 6, 10)
+        }
+        if ([2,3,4].includes(pin[7])) { // kick a planet
+          points += ~~(inpactPower*20)
+          if (pin.kick) return;
+          pin.kick = 1
+          setTimeout(()=> pin.kick = 0, 300)
+          const origRay = pin[2]
+          pin[2] = origRay + 2
+          downPinProp(pin, 2, origRay, .5)
+          if (inpactPower < 1) {
+            ball.vx *= 2 - inpactPower**2
+            ball.vy *= 2 - inpactPower**2
+          }
+          const jailBar = curLevel.pins.filter(p => p[7]==9)[0]
+          let targetPlanet = curLevel.pins[jailBar[8]]
+          if (pin[7] == 4 && targetPlanet == pin) { // Last kick, drop jail bar
+            jailBar[7] = 0
+            lowerPin(jailBar)
+            downPinProp(jailBar, 5, 10)
+            downPinProp(jailBar, 6, 10)
+          } else { // May update jail bar...
+            if (targetPlanet == pin) { // Yes! Update jail bar.
+              jailBar[8]++
+              targetPlanet = curLevel.pins[jailBar[8]]
+              jailBar[4] = targetPlanet[4]
+              jailBar[5] = targetPlanet[5]
+              jailBar[6] = targetPlanet[6]
+            }
+          }
+          const origLight = pin[6]
+          pin[6] = 100
+          downPinProp(pin, 6, origLight)
         }
       }
     }
