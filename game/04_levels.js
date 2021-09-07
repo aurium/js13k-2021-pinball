@@ -325,8 +325,12 @@ const levels = [
       if (base && base.width==w && base.height==h) {
         log('We have a pic cache for Clones level!')
       } else {
-        ctxFloor.fillStyle = '#060'
-        ctxFloor.fillRect(0,0,w,h)
+        // Create base image:
+        for (let x=0; x<w; x++) for (let y=0; y<h; y++) {
+          ctxFloor.fillStyle = `hsl(240,100%,${10+20*y/h}%)`
+          ctxFloor.fillRect(x,y,1,1)
+        }
+        await mkBGStars(6, .55, 35, -128, .3, 1)
         base = getFloorImageData()
         addBasePic(lvlNum, base)
       }
@@ -338,15 +342,49 @@ const levels = [
       return ball.x < 0 || ball.x > 100 ||
              ball.y < 0 || ball.y > hMax
     },
-    pins: [
-    ],
+    pins: mapFor(0,7,1, (x)=>
+      mapFor(0,10,1, (y)=>
+        ( 2<x && x<5 && 3<y && y<7 )
+        ? 0
+        : ((x==2 || x==5) && y%2==0)
+        ? [x*12+7, y*12+25, 1.5, 4,    0,80,35, 1]
+        : [x*12+7, y*12+25, 2.0, 4,  230, 0,30]
+      )
+    ).flat().filter(p => p),
     wallsV: [],
     wallsH: [],
     bh: [],
     wh: [
       [10, 10, 6, 4],
     ],
-    on: {}
+    on: {
+      colidePin(pin, inpactPower, ball) {
+        if (pin[7]) {
+          // It is a Kick pin
+          pin[2] = 2.5
+          if (inpactPower < 1) {
+            ball.vx *= 2 - inpactPower
+            ball.vy *= 2 - inpactPower
+          }
+          setTimeout(()=> downPinProp(pin, 2, 1.5, .3), 100)
+        } else {
+          // It is a clone pin
+          if (pin.die) return;
+          pin[5] += inpactPower*50  // Saturation
+          pin[6] += inpactPower*3   // light
+          points += ~~(inpactPower*10)
+          if (pin[5] > 100) {
+            pin[5] = 100
+            pin.die = 1
+            // freq, start, iniGain, duration, freqEnd
+            postPlay([1000, 0, .5, 1, 100])
+            lowerPin(pin, .4)
+            downPinProp(pin, 6, 5)
+            setTimeout(()=> createBall(...pin), 600)
+          }
+        }
+      }
+    }
   },
 
   { /* * * LEVEL 4 * * */

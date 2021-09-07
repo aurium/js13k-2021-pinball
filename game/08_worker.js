@@ -1,3 +1,25 @@
+function createBall(x,y) {
+  let newBall = {}
+  balls.push(newBall)
+  if (x) [newBall.x, newBall.y, newBall.vx, newBall.vy] = [x, y, 0, 0]
+  else resetBall(newBall)
+  postPlay( // New Ball Song
+    [ 800, 0.0, 0.5, .6],
+    [3000, 0.0, 0.3, .6],
+    [ 800, 0.3, 1.0, .3],
+    [1200, 0.5, 1.0, .5]
+  )
+  return newBall
+}
+
+function resetBall(ball, index=null) {
+  [ball.x, ball.y] = curLevel.ballStart
+  if (index != null) ball.y += ( (balls.length-1)/2 - index ) * 7
+  ball.vx = 0
+  ball.vy = 0
+  return ball
+}
+
 if (!isMainThread) { // Running in a WebWorker
 
 let nextLifeUp = 1000
@@ -27,14 +49,6 @@ const on = {
     gravity = val
   }
 
-}
-
-function resetBall(ball, index=null) {
-  [ball.x, ball.y] = curLevel.ballStart
-  if (index != null) ball.y += ( (balls.length-1)/2 - index ) * 7
-  ball.vx = 0
-  ball.vy = 0
-  return ball
 }
 
 function changeLevel(index) {
@@ -131,18 +145,6 @@ function killBall(ball) {
   }
 }
 
-function createBall() {
-  let newBall = {}
-  balls.push(newBall)
-  resetBall(newBall)
-  return postPlay( // New Ball Song
-    [ 800, 0.0, 0.5, .6],
-    [3000, 0.0, 0.3, .6],
-    [ 800, 0.3, 1.0, .3],
-    [1200, 0.5, 1.0, .5]
-  )
-}
-
 function gameOver() {
   sendMsg('over')
   stopped = 1
@@ -183,7 +185,7 @@ function actPinColision(ball, pin) {
     ball.x = x + vec.x * minDist
     ball.y = y + vec.y * minDist
     if (absVel > 0.01) {
-      if (curLevel.on.colidePin) curLevel.on.colidePin(pin, absVel*2)
+      if (curLevel.on.colidePin) curLevel.on.colidePin(pin, absVel*2, ball)
       const gain = min((absVel*2)**2, 1)
       postPlay(
         [1200, 0, gain/5, .4],
