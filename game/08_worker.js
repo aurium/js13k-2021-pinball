@@ -1,5 +1,6 @@
 if (!isMainThread) { // Running in a WebWorker
 
+let nextLifeUp = 1000
 let stopped = 0
 balls = [ { x:0, y:0, vx:0, vy:0 } ]
 
@@ -81,6 +82,19 @@ function tic() {
         killBall(ball)
       }
     })
+  }
+  if ( points >= nextLifeUp ) {
+    nextLifeUp *= 2
+    if (lives < 3) {
+      lives++
+      postPlay(
+        [ 500, .6, 1, .5],
+        [ 700, .7, 1, .5],
+        [ 900, .8, 1, .5],
+        [1100, .9, 1, .5]
+      )
+      postTTS('Life up!')
+    }
   }
   if ((ticCounter%2) === 0) sendMsg('update', {
     balls: balls.map(values),

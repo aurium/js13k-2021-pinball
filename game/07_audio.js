@@ -12,6 +12,10 @@ function TTS(text, rate=1) {
 }
 if (isMainThread) window.TTS = TTS // DEBUG
 
+function postTTS(text) { // Helper for worker context
+  postMessage(['tts', text])
+}
+
 function postPlay(...tones) { // Helper for worker context
   postMessage(['play', tones])
 }
@@ -47,4 +51,5 @@ function initMusic() {
 
 if (isMainThread) {
   worker.on_play = tones => tones.map(tone => playTone(...tone))
+  worker.on_tts = TTS
 }
