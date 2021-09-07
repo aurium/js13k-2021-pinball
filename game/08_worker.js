@@ -14,7 +14,34 @@ function createBall(x,y) {
 
 function resetBall(ball, index=null) {
   [ball.x, ball.y] = curLevel.ballStart
-  if (index != null) ball.y += ( (balls.length-1)/2 - index ) * 7
+  if (index != null) {
+    let len, ang, dist
+    if (index>0) {
+      if (index<7) {
+        index -= 1
+        len = min(6, balls.length - 1)
+        dist = 2.3
+      }
+      if (index>6 && index<20) {
+        index -= 7
+        len = min(13, balls.length - 7)
+        dist = 4.5
+      }
+      if (index>19 && index<40) {
+        index -= 20
+        len = min(20, balls.length - 20)
+        dist = 6.7
+      }
+      if (index>39) {
+        index -= 40
+        len = balls.length - 40
+        dist = 9
+      }
+      ang = PI2*index/len
+      ball.x += sin(ang) * ballRay*dist
+      ball.y += cos(ang) * ballRay*dist
+    }
+  }
   ball.vx = 0
   ball.vy = 0
   return ball
@@ -25,6 +52,7 @@ if (!isMainThread) { // Running in a WebWorker
 let nextLifeUp = 1000
 let stopped = 0
 balls = [ { x:0, y:0, vx:0, vy:0 } ]
+//balls = mapFor(0,67,1,() => ({ x:0, y:0, vx:0, vy:0 }))
 
 onmessage = function(e) {
   const [evName, payload] = e.data;

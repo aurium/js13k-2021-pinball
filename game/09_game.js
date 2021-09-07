@@ -23,7 +23,7 @@ function updateFloorImage() {
   /* INI DEBUG * /
   ctxFloor.fillStyle = 'rgba(0,0,255,.2)'
   ctxFloor.beginPath()
-  ctxFloor.ellipse(vw*50, vh*50, vw*50, vw*50, 0, 0, 2*PI)
+  ctxFloor.ellipse(vw*50, vh*50, vw*50, vw*50, 0, 0, PI2)
   ctxFloor.fill()
   ctxFloor.fillStyle = 'rgba(0,0,0,.2)'
   ctxFloor.fillRect(w/2, 0, w, h)

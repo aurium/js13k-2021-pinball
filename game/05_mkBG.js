@@ -99,7 +99,7 @@ async function mkBGStars(zoom, z, posX, posY, starChance=.3, drawClouds=1) {
     let pixX = ~~rnd(w), pixY = ~~rnd(h)
     plotStar(pixX, pixY, 23, { r:100, g:200, b:255 })
     ctxFloor.beginPath()
-    ctxFloor.arc(pixX+.5, pixY+.5, 6, 0, PI*2)
+    ctxFloor.arc(pixX+.5, pixY+.5, 6, 0, PI2)
     ctxFloor.strokeStyle = ctxFloor.fillStyle = 'rgba(100,200,255,.4)'
     ctxFloor.stroke()
     ctxFloor.fillRect(pixX-1, pixY-1, 3, 3)
@@ -136,7 +136,7 @@ function mkBGGradient() {
 function drawCircle(ctx, x, y, r, fill, stroke) {
   let [rx, ry] = r.length ? r : [r, r]
   ctx.beginPath()
-  ctx.ellipse(x, y, rx, ry, 0, 0, 2*PI)
+  ctx.ellipse(x, y, rx, ry, 0, 0, PI2)
   ctx.fillStyle = fill
   ctx.fill()
   if (stroke) {

@@ -8,7 +8,7 @@ function drawBall(x, y) {
   const shadowSize = rayU + inclinationValU * 4
   ctxShadow.fillStyle = '#000'
   ctxShadow.beginPath()
-  ctxShadow.ellipse(ballX-shadowSize+rayU, ballY+shadowSize-rayU, shadowSize, rayU, -PI/4, 0, 2*PI)
+  ctxShadow.ellipse(ballX-shadowSize+rayU, ballY+shadowSize-rayU, shadowSize, rayU, -PI/4, 0, PI2)
   ctxShadow.fill()
   // Metal ball
   const grad = mkRadGrad(
@@ -19,7 +19,7 @@ function drawBall(x, y) {
   ctxPieces.fillStyle = grad
   // ctxPieces.fillStyle = 'rgba(0,255,0,.4)'
   ctxPieces.beginPath()
-  ctxPieces.ellipse(ballX, ballY, rayU, rayU, 0, 0, 2*PI)
+  ctxPieces.ellipse(ballX, ballY, rayU, rayU, 0, 0, PI2)
   ctxPieces.fill()
 }
 
@@ -154,7 +154,7 @@ function drawPin(x, y, ray /*radius*/, h, hue,sat,light) {
   // Top
   ctxPieces.fillStyle = `hsl(${hue} ${sat}% ${trans((light*2+100)/3, light/3, inclinationVal)}%)`
   ctxPieces.beginPath()
-  ctxPieces.ellipse(endX, endY, ray, ray, 0, 0, 2*PI)
+  ctxPieces.ellipse(endX, endY, ray, ray, 0, 0, PI2)
   ctxPieces.fill()
 }
 
@@ -179,7 +179,7 @@ function paintWormHole([x, y, r]) {
     'rgba(0,180,255,.2)', '#0CF'
   )
   ctxPieces.beginPath()
-  mapFor(0, 2*PI, PI/6, (a)=> {
+  mapFor(0, PI2, PI/6, (a)=> {
     ctxPieces.moveTo(x+r*1.5*cos(a), y+r*1.5*sin(a))
     ctxPieces.bezierCurveTo(x+r*cos(a)/2, y+r*sin(a)/2, cx,cy, cx,cy)
   })
@@ -189,7 +189,7 @@ function paintWormHole([x, y, r]) {
       , iy = y*i1 + cy*i2
       , ir = r*1.5*i1 + r/3*i2
     ctxPieces.moveTo(ix+ir, iy)
-    ctxPieces.ellipse(ix, iy, ir, ir, 0, 0, 2*PI)
+    ctxPieces.ellipse(ix, iy, ir, ir, 0, 0, PI2)
   })
   ctxPieces.stroke()
 }
@@ -203,7 +203,7 @@ function paintBlackHole([x, y, r]) {
     mkRadGrad(x,y,r*2, x,y,r*1.2, 'rgba(255,0,0,0)', '#000')
   )
   // Dropping dots arround the hole
-  mapFor(0, 2*PI, PI/(r**.8), (a)=> {
+  mapFor(0, PI2, PI/(r**.8), (a)=> {
     let delay = 500 + (a%1)*400
     let dist = (delay-Date.now()%delay)/delay
     ctxPieces.fillStyle = `rgba(255,200,0,${1-dist})`

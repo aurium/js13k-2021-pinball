@@ -60,7 +60,7 @@ const levels = [
       return ball.x < 0 || ball.x > 100 ||
              ball.y < 0 || ball.y > hMax
     },
-    pins: mapFor(PI/18, 2*PI, PI/18, ang =>
+    pins: mapFor(PI/18, PI2, PI/18, ang =>
       [cos(ang)*30+50, sin(ang)*30+90, 1.5, 4,   60,0,50]
     ),
     wallsV: [
@@ -128,7 +128,7 @@ const levels = [
 
         // Draw blinking arrows
         for (let i=0; i<4; i++) {
-          mapFor(PI/4, 2*PI, PI/2, (angle)=> {
+          mapFor(PI/4, PI2, PI/2, (angle)=> {
             let y = -i*14*u - 8*u
             let gY = y - 3.7*u
             ctxFloor.save()
@@ -218,7 +218,7 @@ const levels = [
         clipPath.ellipse(
           limElip[0]*u, limElip[1]*u,
           limElip[2]*u, limElip[3]*u,
-          0, 0, 2*PI
+          0, 0, PI2
         )
         ctxFloor.clip(clipPath)
         // Red texture:
@@ -330,7 +330,7 @@ const levels = [
           ctxFloor.fillStyle = `hsl(240,100%,${10+20*y/h}%)`
           ctxFloor.fillRect(x,y,1,1)
         }
-        await mkBGStars(6, .55, 35, -128, .3, 1)
+        await mkBGStars(6, .55, 35, -128)
         base = getFloorImageData()
         addBasePic(lvlNum, base)
       }
@@ -396,24 +396,34 @@ const levels = [
       if (base && base.width==w && base.height==h) {
         log('We have a pic cache for Minefield level!')
       } else {
-        ctxFloor.fillStyle = '#C90'
-        ctxFloor.fillRect(0,0,w,h)
+        // Create base image:
+        for (let x=0; x<w; x++) for (let y=0; y<h; y++) {
+          ctxFloor.fillStyle = `hsl(${240 + 40*(y/h)**2 + 40*x/w},100%,${40-(y/h)*20}%)`
+          ctxFloor.fillRect(x,y,1,1)
+        }
+        await mkBGStars(6, .55, 3, -1, .1, 0)
         base = getFloorImageData()
         addBasePic(lvlNum, base)
       }
       this.bg.push(base)
     },
     bgFreq: 500,
-    ballStart: [50, hCenter],
+    ballStart: [30, 136],
     out(ball) {
       return ball.x < 0 || ball.x > 100 ||
              ball.y < 0 || ball.y > hMax
     },
     pins: [
+      [ 3, 95, 1.5, 4,  0, 0,30],
+      [22, 88, 1.5, 4,  0, 0,30],
+      [29, 86, 1.5, 4,  0, 0,30],
     ],
     wallsV: [],
     wallsH: [],
-    bh: [],
+    bh: [
+      [43, 80, 10],
+      [12, 90, 6]
+    ],
     wh: [
       [10, 10, 6, 5],
     ],
