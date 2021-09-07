@@ -502,6 +502,7 @@ const levels = [
         ctxFloor.globalCompositeOperation = 'lighter'
         //ctxFloor.filter = `blur(.8px)`
         ctxFloor.strokeStyle = 'rgba(255,30,0,.5)' //'#F20'
+        ctxFloor.lineWidth = 1
         mapFor(0,PI2,.1,(a)=> {
           ctxFloor.save()
           ctxFloor.translate(cx, cy)

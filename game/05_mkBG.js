@@ -101,6 +101,7 @@ async function mkBGStars(zoom, z, posX, posY, starChance=.3, drawClouds=1) {
     ctxFloor.beginPath()
     ctxFloor.arc(pixX+.5, pixY+.5, 6, 0, PI2)
     ctxFloor.strokeStyle = ctxFloor.fillStyle = 'rgba(100,200,255,.4)'
+    ctxFloor.lineWidth = 1
     ctxFloor.stroke()
     ctxFloor.fillRect(pixX-1, pixY-1, 3, 3)
   }
