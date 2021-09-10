@@ -36,7 +36,6 @@ function fillPath(ctx, h,s,l,a, ...path) {
 }
 
 function drawBox(x1,y1, x2,y2, h, hue,sat,light,alpha=1) {
-  // TODO: Drop Shadow
   x1 = x1*u + floorIncX -.5, y1 = y1*u + floorIncY -.5
   x2 = x2*u + floorIncX +.5, y2 = y2*u + floorIncY +.5
   const x1Top = x1 + gravity.x*h/2, y1Top = y1 + gravity.y*h/2
