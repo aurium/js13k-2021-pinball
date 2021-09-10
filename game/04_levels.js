@@ -512,7 +512,7 @@ const levels = [
           const ry = rnd(2,7)*u
           ctxFloor.moveTo(15*u + rx, 0)
           for (let i=0; i<8; i++) {
-            ctxFloor.ellipse(15*u-i/9, 0, rx, ry-i*1.2, 0, 0, PI2)
+            ctxFloor.ellipse(15*u-i/9, 0, rx, max(0, ry-i*1.2), 0, 0, PI2)
             ctxFloor.stroke()
           }
           ctxFloor.restore()
