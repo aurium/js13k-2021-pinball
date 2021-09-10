@@ -298,7 +298,6 @@ const levels = [
     wh: [[15, 15, 6, 3]], // Wormhole [x, y, ray, destination]
     on: {
       tic() {
-        // TODO: Make black ones to pulse
         const angle = Date.now() / 5000
         let x = cos(angle)*35 + 50
         let y = sin(angle)*35 + hCenter

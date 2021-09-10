@@ -51,7 +51,6 @@ worker.on_setLvl = (index)=> {
 
 function setUpLevel() {
   ctxFloor.mustUpdate = 1
-  // TODO: setup elements
 }
 
 scopeShared.tic = function() {
@@ -88,7 +87,6 @@ scopeShared.tic = function() {
   ]
   // Define elements sorter:
   // This isn't perfect! We can't define many objects togheter in the map.
-  // *** TODO: height < 0.2 must be on the list begining!!! ***
   if (gravity.x > 0 && gravity.y < 0) { // Rotation North-West
     els = els.sort(([aP,aX,aY,aLen], [bP,bX,bY,bLen])=> (
       (aP === drawWallVertical && aX < bX) ? aY+=aLen : 0,
