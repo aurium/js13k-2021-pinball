@@ -1,8 +1,8 @@
 SPACEPINBALL
 ============
-**A JS13kGames 2021 Entry**
+[**A JS13kGames 2021 Entry**](https://js13kgames.com/entries/spacepinball)
 
-This is a mobile pinball, based on the device's accelerometer.
+This is a mobile game inspired by pinball, based on the device's accelerometer.
 You can also play this on a desktop and use your mouse to define the table rotation.
 (I think will be better to understand if you try it on a desktop before trying on a mobile)
 
