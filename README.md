@@ -15,7 +15,7 @@ Game features:
 * Drop in black roles will kill the ball.
 * The harder you hit the pin, more points you get.
 * Pins can differ a lot! Pay attention.
-* Each 400, 600, 900, 1200, 1800, ... points will give you a new ball on the table.
+* Each 150, 300, 600, 1200, 1800, 2700, ... points will give you a new ball on the table.
 * Each 1000, 2000, 4000, 8000, ... points will give you a life up.
 * Your life counter are the 3 rockets at the top. You can't have more than 3 lives at time.
 * You lost a life when you reach zero ball on the table.

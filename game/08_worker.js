@@ -79,7 +79,7 @@ function sendMsg(evName, payload) {
 if (!isMainThread) { // Running in a WebWorker
 
 let nextLifeUp = 1000
-let nextNewBall = 400
+let nextNewBall = 150
 balls = [ { x:0, y:0, vx:0, vy:0 } ]
 //balls = mapFor(0,67,1,() => ({ x:0, y:0, vx:0, vy:0 }))
 
@@ -170,7 +170,7 @@ function tic() {
     }
   }
   if (points >= nextNewBall) {
-    nextNewBall = ~~(nextNewBall/200) * 300
+    nextNewBall = nextNewBall<800 ? nextNewBall*2 : ~~(nextNewBall/200) * 300
     postTTS('New ball!')
     createBall(...curLevel.ballStart)
   }
