@@ -104,7 +104,13 @@ const on = {
 }
 
 function changeLevel(index) {
-  curLevel = {...levels[index]}
+  // curLevel = {...levels[index]}
+  curLevel = {}
+  if (!levels[index].counter) levels[index].counter = 0
+  levels[index].counter++
+  Object.entries(levels[index]).map(([key, val])=> {
+    curLevel[key] = val.constructor == Array ? JSON.parse(JSON.stringify(val)) : val
+  })
   log('Moving to level', index)
   sendMsg('setLvl', index)
   balls = balls.map(resetBall)

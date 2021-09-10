@@ -4,7 +4,6 @@ function drawBall(x, y) {
   const rayU = ballRay * u
   const inclinationValU = inclinationVal * u
   // Shadow
-  // TODO: expand shadow with the table rotation (gravity)
   const shadowSize = rayU + inclinationValU * 4
   ctxShadow.fillStyle = '#000'
   ctxShadow.beginPath()

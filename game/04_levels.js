@@ -1,7 +1,7 @@
 let curLevel
 const bottom = (num)=> hMax - num
 
-// TODO: Reset level state when the user back into it! Can that become more dificult?
+// TODO: The limitless must to remove used WH unless inferno.
 
 // Idéia:
 // Um level onde o pin que dá ponto cai de um lado, levantando outro do outro lado.
