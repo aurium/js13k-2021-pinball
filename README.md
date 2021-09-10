@@ -6,7 +6,22 @@ This is a mobile game inspired by pinball, based on the device's accelerometer.
 You can also play this on a desktop and use your mouse to define the table rotation.
 (I think will be better to understand if you try it on a desktop before trying on a mobile)
 
-It will take time to build in the first time. The next page loads will be **much** faster!
+⚠️ It will take time to build in the first time. The next page load will be **much** faster!
+
+Game features:
+* 6 levels (or "pinball tables")
+* You can travel between then using wormholes (the blue holes).
+* Drop out the safe limits will kill the ball. Attention on tables without walls and specially on "Inferno", where the safe limit is only the painted area.
+* Drop in black roles will kill the ball.
+* The harder you hit the pin, more points you get.
+* Pins can differ a lot! Pay attention.
+* Each 400, 600, 900, 1200, 1800, ... points will give you a new ball on the table.
+* Each 1000, 2000, 4000, 8000, ... points will give you a life up.
+* Your life counter are the 3 rockets at the top. You can't have more than 3 lives at time.
+* You lost a life when you reach zero ball on the table.
+  * If you don't reach zero lives, you lost one for a new ball.
+  * Else... Game over.
+* The game will remember your record in this browser.
 
 You can add `?lvl=<num>` to the game URL to start in a specific level.
 
