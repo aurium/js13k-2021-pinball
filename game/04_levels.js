@@ -1,7 +1,5 @@
-let curLevel
+let curLevel, curLevelIndex = 0
 const bottom = (num)=> hMax - num
-
-// TODO: The limitless must to remove used WH unless inferno.
 
 // Idéia:
 // Um level onde o pin que dá ponto cai de um lado, levantando outro do outro lado.
@@ -188,6 +186,14 @@ const levels = [
           downPin[4] = downPin[5] = 90
           lowerPin(downPin)
         }
+      },
+      beforeWH(wormhole) {
+        if (wormhole[3] == 2) return; // Do not remove the door to Inferno.
+        const origLvl = levels[curLevelIndex]
+        // Remove the used wormhole
+        origLvl.wh = origLvl.wh.filter(origWH => origWH[3] != wormhole[3])
+        // Place a black hole in the same place
+        origLvl.bh.push([...wormhole])
       }
     }
   },

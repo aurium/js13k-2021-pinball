@@ -12,7 +12,7 @@ Game features:
 * 6 levels (or "pinball tables")
 * You can travel between then using wormholes (the blue holes).
 * Drop out the safe limits will kill the ball. Attention on tables without walls and specially on "Inferno", where the safe limit is only the painted area.
-* Drop in black roles will kill the ball.
+* Drop in black holes will kill the ball.
 * The harder you hit the pin, more points you get.
 * Pins can differ a lot! Pay attention.
 * Each 150, 300, 600, 1200, 1800, 2700, ... points will give you a new ball on the table.

@@ -100,12 +100,16 @@ const on = {
 
   gravity(val) {
     gravity = val
+  },
+
+  goLvl(index) {
+    changeLevel(index)
   }
 
 }
 
 function changeLevel(index) {
-  // curLevel = {...levels[index]}
+  curLevelIndex = index
   curLevel = {}
   if (!levels[index].counter) levels[index].counter = 0
   levels[index].counter++
@@ -132,6 +136,7 @@ function tic() {
       let hole
       if (hole = curLevel.wh.find(ballInsideRadius(ball))) {
         log('Enter in a wormhole', hole)
+        if (curLevel.on.beforeWH) curLevel.on.beforeWH(hole)
         gameStopped = 1
         sendMsg('lvlFadeOut')
         setTimeout(()=> changeLevel(hole[3]), 2000)

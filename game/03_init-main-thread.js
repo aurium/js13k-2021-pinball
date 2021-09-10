@@ -14,6 +14,8 @@ if (isMainThread) {
 
   worker.$ = (evName, payload)=> worker.postMessage([evName, payload])
 
+  window.goLvl = (index)=> worker.$('goLvl', index)
+
   worker.on_alive = ()=> workerIsAlive = 1
 
   /* INI DEBUG */
