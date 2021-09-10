@@ -221,6 +221,20 @@ pre:after {
 }
 */
 
+#tweet {
+  position: absolute;
+  display: block;
+  top: 45vh;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 9vw;
+  font-weight: bold;
+  text-decoration: none;
+  color: #07D;
+  text-shadow: 0 0 6vw #08F;
+}
+
 /* INI DEBUG */
 fps {
   right: 0;

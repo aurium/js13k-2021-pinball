@@ -153,7 +153,21 @@ worker.on_lvlFadeIn = ()=> body.classList.remove('lvl-fade')
 worker.on_over = ()=> {
   setTimeout(()=> TTS('Sorry... Game Over.'), 1000)
   body.classList.add('over')
+  setTimeout(showTweetScoreLink, 4000)
 }
+
+function showTweetScoreLink() {
+  const tweetLink = doc.createElement('a')
+  tweetLink.id = 'tweet'
+  tweetLink.innerText = 'Tweet your score!'
+  tweetLink.href = 'https://twitter.com/intent/tweet?text=' +
+    encodeURIComponent(
+      `I did reach ${points} points on the SpacePinball game!\n` +
+      $('link[rel="canonical"]').href + '\n#js13k'
+    )
+  body.appendChild(tweetLink)
+}
+window.showTweetScoreLink = showTweetScoreLink // DEBUG
 
 if (isMobile) {
   window.addEventListener("devicemotion", (ev)=> {
