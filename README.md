@@ -18,7 +18,7 @@ Game features:
 * Each 150, 300, 600, 1200, 1800, 2700, ... points will give you a new ball on the table.
 * Each 1000, 2000, 4000, 8000, ... points will give you a life up.
 * Your life counter are the 3 rockets at the top. You can't have more than 3 lives at time.
-* You lost a life when you reach zero ball on the table.
+* You lost a life when you reach zero balls on the table.
   * If you don't reach zero lives, you lost one for a new ball.
   * Else... Game over.
 * The game will remember your record in this browser.
