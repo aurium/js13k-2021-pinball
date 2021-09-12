@@ -84,6 +84,7 @@ const levels = [
           // freq, start, iniGain, duration, freqEnd
           postPlay([1000, 0, .5, 1, 100])
           lowerPin(pin)
+          downPinProp(pin, 6, 20)
         }
       }
     }
@@ -620,8 +621,6 @@ function lowerPin(pin, speed=.1, repeat) {
   if (pin.riseTO) clearTimeout(pin.riseTO)
   delete pin.riseTO
   pin[3] -= speed
-  // TODO: make it with downPinProp
-  //pin[6] = (pin[3]*10 + pin[6]) / 2
   if (pin[3] <= 0) pin[3] = 0
   else pin.lowTO = setTimeout(()=> lowerPin(pin, speed, 1), 60)
 }
