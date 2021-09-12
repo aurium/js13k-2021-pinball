@@ -170,8 +170,8 @@ async function initGame() {
   await sequence
 
   log('Set Header BG')
-  if (levels[1].bg[0]) {
-    ctxFloor.putImageData(levels[1].bg[0], 0, 0)
+  if (levels[5].bg[0]) {
+    ctxFloor.putImageData(levels[5].bg[0], 0, 0)
     $('pre').style.backgroundImage = `url(${canvasFloor.toDataURL()})`
   }
   tryToInitGame()
